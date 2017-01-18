@@ -1,103 +1,3 @@
-define('app',["require", "exports"], function (require, exports) {
-    "use strict";
-    var App = (function () {
-        function App() {
-            this.message = 'Hello World!';
-        }
-        return App;
-    }());
-    exports.App = App;
-});
-
-define('environment',["require", "exports"], function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = {
-        debug: true,
-        testing: true
-    };
-});
-
-define('main',["require", "exports", "./environment"], function (require, exports, environment_1) {
-    "use strict";
-    Promise.config({
-        longStackTraces: environment_1.default.debug,
-        warnings: {
-            wForgottenReturn: false
-        }
-    });
-    function configure(aurelia) {
-        aurelia.use
-            .standardConfiguration()
-            .feature('resources');
-        if (environment_1.default.debug) {
-            aurelia.use.developmentLogging();
-        }
-        if (environment_1.default.testing) {
-            aurelia.use.plugin('aurelia-testing');
-        }
-        aurelia.start().then(function () { return aurelia.setRoot(); });
-    }
-    exports.configure = configure;
-});
-
-define('resources/index',["require", "exports"], function (require, exports) {
-    "use strict";
-    function configure(config) {
-        config.globalResources([
-            'bootstrap/css/bootstrap.css',
-            'resources/styles/iconfonts.css',
-            'resources/styles/minton/css/components.css',
-            'resources/styles/minton/css/core.css',
-            'resources/styles/minton/css/elements.css',
-            'resources/styles/minton/css/icons.css',
-            'resources/styles/minton/css/menu.css',
-            'resources/styles/minton/css/pages.css',
-            'resources/styles/minton/css/responsive.css',
-            'resources/styles/minton/css/variables.css'
-        ]);
-    }
-    exports.configure = configure;
-});
-
-
-
-define("tables/index", [],function(){});
-
-define('resources/services/cookieService',["require", "exports"], function (require, exports) {
-    "use strict";
-    var CookieService = (function () {
-        function CookieService() {
-        }
-        CookieService.prototype.setCookie = function (cname, cvalue, exdays) {
-            var d = new Date();
-            d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-            var expires = "expires=" + d.toUTCString();
-            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-        };
-        CookieService.prototype.getCookie = function (cname) {
-            var name = cname + "=";
-            var ca = document.cookie.split(';');
-            for (var i = 0; i < ca.length; i++) {
-                var c = ca[i];
-                while (c.charAt(0) == ' ') {
-                    c = c.substring(1);
-                }
-                if (c.indexOf(name) == 0) {
-                    return c.substring(name.length, c.length);
-                }
-            }
-            return "";
-        };
-        CookieService.prototype.cookieExists = function (cname) {
-            var value = this.getCookie(cname);
-            return value != "";
-        };
-        return CookieService;
-    }());
-    exports.CookieService = CookieService;
-});
-
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -173,12 +73,462 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-define('resources/services/restService',["require", "exports", "aurelia-dependency-injection", "aurelia-fetch-client", "./eventService"], function (require, exports, aurelia_dependency_injection_1, aurelia_fetch_client_1, eventService_1) {
+define('app',["require", "exports", "aurelia-dependency-injection", "aurelia-fetch-client", "./resources/services/eventService"], function (require, exports, aurelia_dependency_injection_1, aurelia_fetch_client_1, eventService_1) {
     "use strict";
-    var RestService = (function () {
-        function RestService(http, eventService) {
+    var App = (function () {
+        function App(http, eventService) {
+            this.message = 'Hello World!';
             this.http = http;
             this.eventService = eventService;
+            eventService.subscribe('response', function (data) {
+            });
+        }
+        App.prototype.activate = function () {
+            return __awaiter(this, void 0, void 0, function () {
+                var response;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, this.http.fetch("https://jsonplaceholder.typicode.com/posts/1")];
+                        case 1:
+                            response = _a.sent();
+                            window.setTimeout(function () {
+                                console.log($('#main'));
+                                $('#main').dataTable({
+                                    paging: false,
+                                    info: false
+                                });
+                                $('input').addClass("form-control input-sm");
+                            }, 2000);
+                            return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        return App;
+    }());
+    App = __decorate([
+        aurelia_dependency_injection_1.inject(aurelia_fetch_client_1.HttpClient, eventService_1.EventService),
+        __metadata("design:paramtypes", [aurelia_fetch_client_1.HttpClient, eventService_1.EventService])
+    ], App);
+    exports.App = App;
+});
+
+define('environment',["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = {
+        debug: true,
+        testing: true
+    };
+});
+
+define('main',["require", "exports", "./environment", "aurelia-framework", "aurelia-logging-console", "aurelia-fetch-client", "aurelia-event-aggregator"], function (require, exports, environment_1, aurelia_framework_1, aurelia_logging_console_1, aurelia_fetch_client_1, aurelia_event_aggregator_1) {
+    "use strict";
+    Promise.config({
+        longStackTraces: environment_1.default.debug,
+        warnings: {
+            wForgottenReturn: false
+        }
+    });
+    function configure(aurelia) {
+        aurelia.use
+            .standardConfiguration()
+            .feature('resources')
+            .feature('microservices/auth')
+            .feature('main/shell');
+        if (environment_1.default.debug) {
+            aurelia_framework_1.LogManager.addAppender(new aurelia_logging_console_1.ConsoleAppender());
+            aurelia_framework_1.LogManager.setLevel(aurelia_framework_1.LogManager.logLevel.debug);
+        }
+        if (environment_1.default.testing) {
+            aurelia.use.plugin('aurelia-testing');
+        }
+        var log = aurelia_framework_1.LogManager.getLogger('RestService');
+        var ea = aurelia.container.get(aurelia_event_aggregator_1.EventAggregator);
+        var httpClient = aurelia.container.get(aurelia_fetch_client_1.HttpClient);
+        httpClient.configure(function (config) {
+            config
+                .withDefaults({
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'Fetch'
+                }
+            })
+                .withInterceptor({
+                request: function (request) {
+                    log.info(request);
+                    ea.publish('request');
+                    return request;
+                },
+                response: function (response) {
+                    log.info(response);
+                    ea.publish('response');
+                    return response;
+                }
+            });
+        });
+        aurelia.start().then(function () { return aurelia.setRoot(); });
+    }
+    exports.configure = configure;
+});
+
+define('resources/index',["require", "exports"], function (require, exports) {
+    "use strict";
+    function configure(config) {
+        config.globalResources([
+            'bootstrap/css/bootstrap.css',
+            'resources/styles/iconfonts.css',
+            'resources/styles/minton/css/components.css',
+            'resources/styles/minton/css/core.css',
+            'resources/styles/minton/css/elements.css',
+            'resources/styles/minton/css/icons.css',
+            'resources/styles/minton/css/menu.css',
+            'resources/styles/minton/css/pages.css',
+            'resources/styles/minton/css/responsive.css',
+            'resources/styles/minton/css/variables.css'
+        ]);
+    }
+    exports.configure = configure;
+});
+
+define('main/shell/index',["require", "exports"], function (require, exports) {
+    "use strict";
+    function configure(config) {
+        config.globalResources([
+            "./shell"
+        ]);
+    }
+    exports.configure = configure;
+});
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+define('main/shell/routerService',["require", "exports", "aurelia-framework", "aurelia-router"], function (require, exports, aurelia_framework_1, aurelia_router_1) {
+    "use strict";
+    var RouterService = (function () {
+        function RouterService(router) {
+            var _this = this;
+            this.currentRoute = 'statistics';
+            console.log('router ctor');
+            router.events.subscribe('router:navigation:complete', function (data) {
+                if (data.instruction.fragment == '/') {
+                    _this.currentRoute = 'statistics';
+                }
+                else {
+                    _this.currentRoute = _this.determineRoute(data.instruction.fragment);
+                }
+                console.log("route: " + data.instruction.fragment);
+            });
+        }
+        RouterService.prototype.configureRouter = function (config) {
+            console.log('configuring router');
+            config.title = "ppppool",
+                config.map([
+                    { route: [""], moduleId: "./main/statistics/statistics", title: 'Statistics', nav: true },
+                    { route: ["picks"], moduleId: "./main/picks/picks", title: 'Picks', nav: true },
+                    { route: ["feedback"], moduleId: "./main/feedback/feedback", title: 'Feedback' },
+                    { route: ["admin"], moduleId: "./main/admin/admin", title: 'Admin', nav: true },
+                    { route: ["settings"], moduleId: "./main/settings/settings", title: 'Settings', nav: true },
+                ]);
+            return config;
+        };
+        RouterService.prototype.determineRoute = function (route) {
+            var firstSlash = false;
+            var buffer = '';
+            for (var _i = 0, route_1 = route; _i < route_1.length; _i++) {
+                var c = route_1[_i];
+                if (!firstSlash) {
+                    if (c == '/') {
+                        firstSlash = true;
+                        continue;
+                    }
+                }
+                if (c == '/') {
+                    return buffer;
+                }
+                buffer = buffer + c;
+            }
+            return buffer;
+        };
+        return RouterService;
+    }());
+    RouterService = __decorate([
+        aurelia_framework_1.inject(aurelia_router_1.Router),
+        __metadata("design:paramtypes", [Object])
+    ], RouterService);
+    exports.RouterService = RouterService;
+});
+
+define('main/shell/shell',["require", "exports"], function (require, exports) {
+    "use strict";
+    var ShellCustomElement = (function () {
+        function ShellCustomElement() {
+        }
+        return ShellCustomElement;
+    }());
+    exports.ShellCustomElement = ShellCustomElement;
+});
+
+define('resources/services/cookieService',["require", "exports"], function (require, exports) {
+    "use strict";
+    var CookieService = (function () {
+        function CookieService() {
+        }
+        CookieService.prototype.setCookie = function (cname, cvalue, exdays) {
+            var d = new Date();
+            d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+            var expires = "expires=" + d.toUTCString();
+            document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        };
+        CookieService.prototype.getCookie = function (cname) {
+            var name = cname + "=";
+            var ca = document.cookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        };
+        CookieService.prototype.cookieExists = function (cname) {
+            var value = this.getCookie(cname);
+            return value != "";
+        };
+        return CookieService;
+    }());
+    exports.CookieService = CookieService;
+});
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t;
+    return { next: verb(0), "throw": verb(1), "return": verb(2) };
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+define('resources/services/authService',["require", "exports", "aurelia-dependency-injection", "./cookieService", "aurelia-framework", "./eventService"], function (require, exports, aurelia_dependency_injection_1, cookieService_1, aurelia_framework_1, eventService_1) {
+    "use strict";
+    var log = aurelia_framework_1.LogManager.getLogger('authService');
+    var AuthService = (function () {
+        function AuthService(cs, ea) {
+            this.adminRequestCallback = null;
+            this.cookieService = cs;
+            this.eventService = ea;
+        }
+        AuthService.prototype.login = function (token) {
+            log.debug('storing auth cookie');
+            this.cookieService.setCookie("authToken", JSON.stringify(token), 1000);
+            this.eventService.publish('login');
+        };
+        AuthService.prototype.isLoggedIn = function () {
+            var isLoggedIn = this.cookieService.cookieExists("authToken");
+            log.debug("is logged in: " + isLoggedIn);
+            return isLoggedIn;
+        };
+        AuthService.prototype.getWebToken = function () {
+            if (this.isLoggedIn()) {
+                var data = JSON.parse(this.cookieService.getCookie("authToken"));
+                return new WebToken(data.email, data.authToken, data.userId, data.name);
+            }
+            return null;
+        };
+        AuthService.prototype.logout = function () {
+            log.debug("logging out.");
+            this.cookieService.setCookie("authToken", "", 1);
+            window.location.replace("#");
+            this.eventService.publish('logout');
+        };
+        AuthService.prototype.setAdminRequestCallback = function (adminRequestCallback) {
+            this.adminRequestCallback = adminRequestCallback;
+        };
+        AuthService.prototype.requestAdminAuthorization = function () {
+            return __awaiter(this, void 0, void 0, function () {
+                var authToken, isAdmin;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            if (!this.isLoggedIn()) {
+                                return [2 /*return*/];
+                            }
+                            log.debug("Requesting admin authorization");
+                            authToken = this.getWebToken().authToken;
+                            return [4 /*yield*/, this.adminRequestCallback(authToken)];
+                        case 1:
+                            isAdmin = _a.sent();
+                            log.debug("Admin authorizatio: " + isAdmin);
+                            return [2 /*return*/, isAdmin];
+                    }
+                });
+            });
+        };
+        return AuthService;
+    }());
+    AuthService = __decorate([
+        aurelia_dependency_injection_1.inject(cookieService_1.CookieService, eventService_1.EventService),
+        __metadata("design:paramtypes", [cookieService_1.CookieService, eventService_1.EventService])
+    ], AuthService);
+    exports.AuthService = AuthService;
+    var WebToken = (function () {
+        function WebToken(email, authToken, userId, name) {
+            this.email = email;
+            this.authToken = authToken;
+            this.userId = userId;
+            this.name = name;
+        }
+        return WebToken;
+    }());
+    exports.WebToken = WebToken;
+});
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+define('main/shell/top-bar',["require", "exports", "aurelia-framework", "../../resources/services/eventService", "../../resources/services/authService"], function (require, exports, aurelia_framework_1, eventService_1, authService_1) {
+    "use strict";
+    var TopBarCustomElement = (function () {
+        function TopBarCustomElement(authService, eventService) {
+            var _this = this;
+            this.title = "PPP PGA Pool";
+            this.currentRoute = 'statistics';
+            this.loggedIn = false;
+            this.authService = authService;
+            this.eventService = eventService;
+            this.eventService.subscribe('routed', function (data) {
+                _this.currentRoute = data;
+            });
+            this.eventService.subscribe('login', function () {
+                _this.loggedIn = true;
+            });
+            this.eventService.subscribe('logout', function () {
+                _this.loggedIn = false;
+            });
+        }
+        TopBarCustomElement.prototype.logout = function () {
+            this.authService.logout();
+        };
+        return TopBarCustomElement;
+    }());
+    TopBarCustomElement = __decorate([
+        aurelia_framework_1.inject(authService_1.AuthService, eventService_1.EventService),
+        __metadata("design:paramtypes", [Object, Object])
+    ], TopBarCustomElement);
+    exports.TopBarCustomElement = TopBarCustomElement;
+});
+
+define('main/statistics/statistics',["require", "exports"], function (require, exports) {
+    "use strict";
+    var Statistics = (function () {
+        function Statistics() {
+            this.message = "statistics";
+        }
+        return Statistics;
+    }());
+    exports.Statistics = Statistics;
+});
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t;
+    return { next: verb(0), "throw": verb(1), "return": verb(2) };
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+define('resources/services/restService',["require", "exports", "aurelia-dependency-injection", "aurelia-fetch-client"], function (require, exports, aurelia_dependency_injection_1, aurelia_fetch_client_1) {
+    "use strict";
+    var RestService = (function () {
+        function RestService(http) {
+            this.http = http;
         }
         RestService.prototype.post = function (url, query, headers, body) {
             if (query === void 0) { query = null; }
@@ -191,7 +541,6 @@ define('resources/services/restService',["require", "exports", "aurelia-dependen
                         case 0:
                             urlQuery = this.getQueryUrl(url, query);
                             this.requestDiagnostic();
-                            console.log({ url: urlQuery, headers: headers });
                             if (!headers) {
                                 headers = {};
                             }
@@ -211,14 +560,13 @@ define('resources/services/restService',["require", "exports", "aurelia-dependen
                             return [4 /*yield*/, response.json()];
                         case 3:
                             content = _a.sent();
-                            console.log(content);
                             return [3 /*break*/, 5];
                         case 4:
                             err_1 = _a.sent();
                             content = {};
                             console.log(err_1);
                             return [3 /*break*/, 5];
-                        case 5: return [2 /*return*/, new Response(response.status, response.statusText, content)];
+                        case 5: return [2 /*return*/, new Response(content["Status"] ? content["Status"] : response.status, content["StatusText"] ? content["StatusText"] : response.statusText, content)];
                     }
                 });
             });
@@ -235,36 +583,238 @@ define('resources/services/restService',["require", "exports", "aurelia-dependen
             return str.join("&");
         };
         RestService.prototype.requestDiagnostic = function () {
-            console.log('request');
-            this.eventService.publish('request');
         };
         RestService.prototype.responseDiagnostic = function () {
-            console.log('response');
-            this.eventService.publish('response');
         };
         return RestService;
     }());
     RestService = __decorate([
         aurelia_dependency_injection_1.autoinject(),
-        __metadata("design:paramtypes", [aurelia_fetch_client_1.HttpClient, eventService_1.EventService])
+        __metadata("design:paramtypes", [aurelia_fetch_client_1.HttpClient])
     ], RestService);
     exports.RestService = RestService;
     var Response = (function () {
-        function Response(status, statusText, data, isError) {
+        function Response(status, statusText, data) {
             if (data === void 0) { data = null; }
-            if (isError === void 0) { isError = false; }
             this.Status = status;
             this.StatusText = statusText;
             this.Data = data;
-            this.IsError = isError;
+            this.IsError = status != 200;
         }
         return Response;
     }());
     exports.Response = Response;
 });
 
-define('text!app.html', ['module'], function(module) { module.exports = "<template>\n  <h1>${message}</h1>\n  <h1 class=\"glyphicon glyphicon-log-out\"></h1>\n  <h1 class=\"fa fa-bluetooth\"></h1>\n</template>\n"; });
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t;
+    return { next: verb(0), "throw": verb(1), "return": verb(2) };
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+define('microservices/auth/authClient',["require", "exports", "aurelia-dependency-injection", "../../resources/services/restService", "aurelia-framework", "../../resources/services/authService"], function (require, exports, aurelia_dependency_injection_1, restService_1, aurelia_framework_1, authService_1) {
+    "use strict";
+    var log = aurelia_framework_1.LogManager.getLogger('authClient');
+    var AuthClient = (function () {
+        function AuthClient(restService, authService) {
+            var _this = this;
+            this.serviceUrl = "https://ppppoolauthservice.azurewebsites.net";
+            this.restService = restService;
+            this.authService = authService;
+            this.authService.setAdminRequestCallback(function (authToken) { return __awaiter(_this, void 0, void 0, function () {
+                var result;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, this.authorize("admin", authToken)];
+                        case 1:
+                            result = _a.sent();
+                            return [2 /*return*/, result];
+                    }
+                });
+            }); });
+        }
+        AuthClient.prototype.login = function (userId, password) {
+            return __awaiter(this, void 0, void 0, function () {
+                var response, data;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, this.restService.post(this.serviceUrl + "/api/login", {
+                                userId: userId,
+                                password: password
+                            })];
+                        case 1:
+                            response = _a.sent();
+                            if (!response.IsError) {
+                                data = response.Data;
+                                this.authService.login(new authService_1.WebToken(data["email"], data["authToken"], data["userId"], data["name"]));
+                            }
+                            return [2 /*return*/, !response.IsError];
+                    }
+                });
+            });
+        };
+        AuthClient.prototype.authorize = function (role, authToken) {
+            return __awaiter(this, void 0, void 0, function () {
+                var response;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, this.restService.post(this.serviceUrl + "/api/authenticate", {
+                                role: role,
+                                authToken: authToken
+                            })];
+                        case 1:
+                            response = _a.sent();
+                            return [2 /*return*/, !response.IsError];
+                    }
+                });
+            });
+        };
+        return AuthClient;
+    }());
+    AuthClient = __decorate([
+        aurelia_dependency_injection_1.inject(restService_1.RestService, authService_1.AuthService),
+        __metadata("design:paramtypes", [restService_1.RestService, authService_1.AuthService])
+    ], AuthClient);
+    exports.AuthClient = AuthClient;
+});
+
+define('microservices/auth/index',["require", "exports"], function (require, exports) {
+    "use strict";
+    function configure(config) {
+        config.globalResources([
+            "./login"
+        ]);
+    }
+    exports.configure = configure;
+});
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t;
+    return { next: verb(0), "throw": verb(1), "return": verb(2) };
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+define('microservices/auth/login',["require", "exports", "aurelia-dependency-injection", "./authClient"], function (require, exports, aurelia_dependency_injection_1, authClient_1) {
+    "use strict";
+    var LoginCustomElement = (function () {
+        function LoginCustomElement(ac) {
+            this.errorMessage = '';
+            this.authClient = ac;
+        }
+        LoginCustomElement.prototype.login = function () {
+            return __awaiter(this, void 0, void 0, function () {
+                var response;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            this.errorMessage = "";
+                            if (!this.userId || !this.password) {
+                                return [2 /*return*/];
+                            }
+                            return [4 /*yield*/, this.authClient.login(this.userId, this.password)];
+                        case 1:
+                            response = _a.sent();
+                            if (!response) {
+                                this.errorMessage = "Login failed";
+                            }
+                            return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        return LoginCustomElement;
+    }());
+    LoginCustomElement = __decorate([
+        aurelia_dependency_injection_1.inject(authClient_1.AuthClient),
+        __metadata("design:paramtypes", [authClient_1.AuthClient])
+    ], LoginCustomElement);
+    exports.LoginCustomElement = LoginCustomElement;
+});
+
+define('text!app.html', ['module'], function(module) { module.exports = "<template>\n  <require from=\"resources/styles/datatablestyles.css\"></require>\n  <!--<shell></shell>-->\n\n  <div class=\"col-sm-5\">\n    <div class=\"card-box\">\n      <table id=\"main\" class=\"table\">\n        <thead>\n          <tr>\n            <th>Firstname</th>\n            <th>Lastname</th>\n            <th>Age</th>\n          </tr>\n        </thead>\n        <tbody>\n          <tr>\n            <td>Jill</td>\n            <td>Smith</td>\n            <td>50</td>\n          </tr>\n          <tr>\n            <td>Eve</td>\n            <td>Jackson</td>\n            <td>94</td>\n          </tr>\n        </tbody>\n      </table>\n    </div>\n  </div>\n</template>"; });
+define('text!main/statistics/statistics.html', ['module'], function(module) { module.exports = "<template>\r\n  ${message}\r\n</template>"; });
+define('text!main/shell/top-bar.css', ['module'], function(module) { module.exports = "#topnav .top-bar-color {\r\n  background-color: #55bb22;\r\n}"; });
+define('text!resources/styles/datatablestyles.css', ['module'], function(module) { module.exports = "div.dataTables_length label {\r\n\tfont-weight: normal;\r\n\ttext-align: left;\r\n\twhite-space: nowrap;\r\n}\r\n\r\ndiv.dataTables_length select {\r\n\twidth: 75px;\r\n\tdisplay: inline-block;\r\n}\r\n\r\ndiv.dataTables_filter {\r\n\ttext-align: right;\r\n}\r\n\r\ndiv.dataTables_filter label {\r\n\tfont-weight: normal;\r\n\twhite-space: nowrap;\r\n\ttext-align: left;\r\n}\r\n\r\ndiv.dataTables_filter input {\r\n\tmargin-left: 0.5em;\r\n\tdisplay: inline-block;\r\n}\r\n\r\ndiv.dataTables_info {\r\n\tpadding-top: 8px;\r\n\twhite-space: nowrap;\r\n}\r\n\r\ndiv.dataTables_paginate {\r\n\tmargin: 0;\r\n\twhite-space: nowrap;\r\n\ttext-align: right;\r\n}\r\n\r\ndiv.dataTables_paginate ul.pagination {\r\n\tmargin: 2px 0;\r\n\twhite-space: nowrap;\r\n}\r\n\r\n@media screen and (max-width: 767px) {\r\n\tdiv.dataTables_length,\r\n\tdiv.dataTables_filter,\r\n\tdiv.dataTables_info,\r\n\tdiv.dataTables_paginate {\r\n\t\ttext-align: center;\r\n\t}\r\n}\r\n\r\n\r\ntable.dataTable td,\r\ntable.dataTable th {\r\n\tbox-sizing: content-box;\r\n}\r\n\r\n\r\ntable.dataTable {\r\n\tclear: both;\r\n\tmargin-top: 6px !important;\r\n\tmargin-bottom: 6px !important;\r\n\tmax-width: none !important;\r\n}\r\n\r\ntable.dataTable thead .sorting,\r\ntable.dataTable thead .sorting_asc,\r\ntable.dataTable thead .sorting_desc,\r\ntable.dataTable thead .sorting_asc_disabled,\r\ntable.dataTable thead .sorting_desc_disabled {\r\n\tcursor: pointer;\r\n\tposition: relative;\r\n}\r\n\r\ntable.dataTable thead .sorting:after,\r\ntable.dataTable thead .sorting_asc:after,\r\ntable.dataTable thead .sorting_desc:after {\r\n\tposition: absolute;\r\n\ttop: 8px;\r\n\tright: 8px;\r\n\tdisplay: block;\r\n\tfont-family: 'Glyphicons Halflings Edit';\r\n\topacity: 0.5;\r\n}\r\ntable.dataTable thead .sorting:after {\r\n\topacity: 0.2;\r\n\tcontent: \"\\e150\"; /* sort */\r\n}\r\ntable.dataTable thead .sorting_asc:after {\r\n\tcontent: \"\\e155\"; /* sort-by-attributes */\r\n}\r\ntable.dataTable thead .sorting_desc:after {\r\n\tcontent: \"\\e156\"; /* sort-by-attributes-alt */\r\n}\r\n\r\ntable.dataTable thead .sorting_asc_disabled:after,\r\ntable.dataTable thead .sorting_desc_disabled:after {\r\n\tcolor: #eee;\r\n}\r\n\r\ntable.dataTable thead > tr > th {\r\n\tpadding-left: 8px;\r\n\tpadding-right: 30px;\r\n}\r\n\r\ntable.dataTable th:active {\r\n\toutline: none;\r\n}\r\n\r\n/* Scrolling */\r\ndiv.dataTables_scrollHead table {\r\n\tmargin-bottom: 0 !important;\r\n\tborder-bottom-left-radius: 0;\r\n\tborder-bottom-right-radius: 0;\r\n}\r\n\r\ndiv.dataTables_scrollHead table thead tr:last-child th:first-child,\r\ndiv.dataTables_scrollHead table thead tr:last-child td:first-child {\r\n\tborder-bottom-left-radius: 0 !important;\r\n\tborder-bottom-right-radius: 0 !important;\r\n}\r\n\r\ndiv.dataTables_scrollBody table {\r\n\tborder-top: none;\r\n\tmargin-top: 0 !important;\r\n\tmargin-bottom: 0 !important;\r\n}\r\n\r\ndiv.dataTables_scrollBody tbody tr:first-child th,\r\ndiv.dataTables_scrollBody tbody tr:first-child td {\r\n\tborder-top: none;\r\n}\r\n\r\ndiv.dataTables_scrollFoot table {\r\n\tmargin-top: 0 !important;\r\n\tborder-top: none;\r\n}\r\n\r\n/* Frustratingly the border-collapse:collapse used by Bootstrap makes the column\r\n   width calculations when using scrolling impossible to align columns. We have\r\n   to use separate\r\n */\r\ntable.table-bordered.dataTable {\r\n\tborder-collapse: separate !important;\r\n}\r\ntable.table-bordered thead th,\r\ntable.table-bordered thead td {\r\n\tborder-left-width: 0;\r\n\tborder-top-width: 0;\r\n}\r\ntable.table-bordered tbody th,\r\ntable.table-bordered tbody td {\r\n\tborder-left-width: 0;\r\n\tborder-bottom-width: 0;\r\n}\r\ntable.table-bordered th:last-child,\r\ntable.table-bordered td:last-child {\r\n\tborder-right-width: 0;\r\n}\r\ndiv.dataTables_scrollHead table.table-bordered {\r\n\tborder-bottom-width: 0;\r\n}\r\n\r\n\r\n\r\n\r\n/*\r\n * TableTools styles\r\n */\r\n.table.dataTable tbody tr.active td,\r\n.table.dataTable tbody tr.active th {\r\n\tbackground-color: #08C;\r\n\tcolor: white;\r\n}\r\n\r\n.table.dataTable tbody tr.active:hover td,\r\n.table.dataTable tbody tr.active:hover th {\r\n\tbackground-color: #0075b0 !important;\r\n}\r\n\r\n.table.dataTable tbody tr.active th > a,\r\n.table.dataTable tbody tr.active td > a {\r\n\tcolor: white;\r\n}\r\n\r\n.table-striped.dataTable tbody tr.active:nth-child(odd) td,\r\n.table-striped.dataTable tbody tr.active:nth-child(odd) th {\r\n\tbackground-color: #017ebc;\r\n}\r\n\r\ntable.DTTT_selectable tbody tr {\r\n\tcursor: pointer;\r\n}\r\n\r\ndiv.DTTT .btn:hover {\r\n\ttext-decoration: none !important;\r\n}\r\n\r\nul.DTTT_dropdown.dropdown-menu {\r\n  z-index: 2003;\r\n}\r\n\r\nul.DTTT_dropdown.dropdown-menu a {\r\n\tcolor: #333 !important; /* needed only when demo_page.css is included */\r\n}\r\n\r\nul.DTTT_dropdown.dropdown-menu li {\r\n\tposition: relative;\r\n}\r\n\r\nul.DTTT_dropdown.dropdown-menu li:hover a {\r\n\tbackground-color: #0088cc;\r\n\tcolor: white !important;\r\n}\r\n\r\ndiv.DTTT_collection_background {\r\n\tz-index: 2002;\t\r\n}\r\n\r\n/* TableTools information display */\r\ndiv.DTTT_print_info {\r\n\tposition: fixed;\r\n\ttop: 50%;\r\n\tleft: 50%;\r\n\twidth: 400px;\r\n\theight: 150px;\r\n\tmargin-left: -200px;\r\n\tmargin-top: -75px;\r\n\ttext-align: center;\r\n\tcolor: #333;\r\n\tpadding: 10px 30px;\r\n\topacity: 0.95;\r\n\r\n\tbackground-color: white;\r\n\tborder: 1px solid rgba(0, 0, 0, 0.2);\r\n\tborder-radius: 6px;\r\n\tbox-shadow: 0 3px 7px rgba(0, 0, 0, 0.5);\r\n}\r\n\r\ndiv.DTTT_print_info h6 {\r\n\tfont-weight: normal;\r\n\tfont-size: 28px;\r\n\tline-height: 28px;\r\n\tmargin: 1em;\r\n}\r\n\r\ndiv.DTTT_print_info p {\r\n\tfont-size: 14px;\r\n\tline-height: 20px;\r\n}\r\n\r\ndiv.dataTables_processing {\r\n    position: absolute;\r\n    top: 50%;\r\n    left: 50%;\r\n    width: 100%;\r\n    height: 60px;\r\n    margin-left: -50%;\r\n    margin-top: -25px;\r\n    padding-top: 20px;\r\n    padding-bottom: 20px;\r\n    text-align: center;\r\n    font-size: 1.2em;\r\n    background-color: white;\r\n    background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 25%, rgba(255,255,255,0.9) 75%, rgba(255,255,255,0) 100%);\r\n}\r\n\r\n\r\n\r\n/*\r\n * FixedColumns styles\r\n */\r\ndiv.DTFC_LeftHeadWrapper table,\r\ndiv.DTFC_LeftFootWrapper table,\r\ndiv.DTFC_RightHeadWrapper table,\r\ndiv.DTFC_RightFootWrapper table,\r\ntable.DTFC_Cloned tr.even {\r\n    background-color: white;\r\n    margin-bottom: 0;\r\n}\r\n \r\ndiv.DTFC_RightHeadWrapper table ,\r\ndiv.DTFC_LeftHeadWrapper table {\r\n\tborder-bottom: none !important;\r\n    margin-bottom: 0 !important;\r\n    border-top-right-radius: 0 !important;\r\n    border-bottom-left-radius: 0 !important;\r\n    border-bottom-right-radius: 0 !important;\r\n}\r\n \r\ndiv.DTFC_RightHeadWrapper table thead tr:last-child th:first-child,\r\ndiv.DTFC_RightHeadWrapper table thead tr:last-child td:first-child,\r\ndiv.DTFC_LeftHeadWrapper table thead tr:last-child th:first-child,\r\ndiv.DTFC_LeftHeadWrapper table thead tr:last-child td:first-child {\r\n    border-bottom-left-radius: 0 !important;\r\n    border-bottom-right-radius: 0 !important;\r\n}\r\n \r\ndiv.DTFC_RightBodyWrapper table,\r\ndiv.DTFC_LeftBodyWrapper table {\r\n    border-top: none;\r\n    margin: 0 !important;\r\n}\r\n \r\ndiv.DTFC_RightBodyWrapper tbody tr:first-child th,\r\ndiv.DTFC_RightBodyWrapper tbody tr:first-child td,\r\ndiv.DTFC_LeftBodyWrapper tbody tr:first-child th,\r\ndiv.DTFC_LeftBodyWrapper tbody tr:first-child td {\r\n    border-top: none;\r\n}\r\n \r\ndiv.DTFC_RightFootWrapper table,\r\ndiv.DTFC_LeftFootWrapper table {\r\n    border-top: none;\r\n    margin-top: 0 !important;\r\n}\r\n\r\n\r\n/*\r\n * FixedHeader styles\r\n */\r\ndiv.FixedHeader_Cloned table {\r\n\tmargin: 0 !important\r\n}\r\n\r\n/*\r\n * Added for golf pool.\r\n */\r\n.form-control {\r\n  width: 75%;\r\n\ttransition: none;\r\n}"; });
+define('text!main/shell/shell.html', ['module'], function(module) { module.exports = "<template>\r\n  <require from=\"./top-bar\"></require>\r\n  <header id=\"topnav\">\r\n    <top-bar></top-bar>    \r\n  </header>\r\n  <div class=\"wrapper container\">\r\n    <!--<router-view if.bind=\"loggedIn\"></router-view>-->\r\n    <login></login>\r\n  </div>\r\n</template>"; });
+define('text!main/shell/top-bar.html', ['module'], function(module) { module.exports = "<template>\r\n  <require from=\"./top-bar.css\"></require>\r\n  <div class=\"topbar-main top-bar-color\">\r\n    <div class=\"container\">\r\n      <div class=\"logo nav navbar-nav\">\r\n        <ul class=\"nav navbar-nav\">\r\n          <li><a href=\"#\"><span>${title}</span></a></li>\r\n        </ul>\r\n      </div>\r\n      <div if.bind=\"loggedIn\">\r\n        <ul class=\"nav navbar-nav navbar-right pull-right\">\r\n          <li><a href=\"/#/settings\"><i class=\"fa fa-cog\" css=\"${currentRoute === 'settings' ? 'color:black;' : ''}\"></i></a></li>\r\n          <li><a href=\"/#/user/:id\"><span class=\"fa fa-user\" css=\"${currentRoute.includes('user/') ? 'color:black;' : ''}\"></span></a></li>\r\n          <li><a href=\"#\"><span class=\"glyphicon glyphicon-log-out\" title=\"Logout\" click.trigger=\"logout()\"></span></a></li>\r\n        </ul>\r\n      </div>\r\n    </div>\r\n  </div>  \r\n</template>"; });
 define('text!resources/styles/iconfonts.css', ['module'], function(module) { module.exports = "@font-face {\r\n  font-family: 'Glyphicons Halflings Edit';\r\n\r\n  src: url('node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.eot');\r\n  src: url('node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.woff2') format('woff2'), url('node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.woff') format('woff'), url('node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');\r\n}\r\n\r\n.glyphicon {\r\n  position: relative;\r\n  top: 1px;\r\n  display: inline-block;\r\n  font-family: 'Glyphicons Halflings Edit' !important;\r\n  font-style: normal;\r\n  font-weight: normal;\r\n  line-height: 1;\r\n\r\n  -webkit-font-smoothing: antialiased;\r\n  -moz-osx-font-smoothing: grayscale;\r\n}\r\n\r\n@font-face {\r\n  font-family: 'FontAwesome Edit';\r\n  src: url('src/resources/styles/minton/fonts/fontawesome-webfont.eot?v=4.5.0');\r\n  src: url('src/resources/styles/minton/fonts/fontawesome-webfont.eot?#iefix&v=4.5.0') format('embedded-opentype'), url('src/resources/styles/minton/fonts/fontawesome-webfont.woff2?v=4.5.0') format('woff2'), url('src/resources/styles/minton/fonts/fontawesome-webfont.woff?v=4.5.0') format('woff'), url('src/resources/styles/minton/fonts/fontawesome-webfont.ttf?v=4.5.0') format('truetype'), url('src/resources/styles/minton/fonts/fontawesome-webfont.svg?v=4.5.0#fontawesomeregular') format('svg');\r\n  font-weight: normal;\r\n  font-style: normal;\r\n}\r\n.fa {\r\n  display: inline-block;\r\n  font: normal normal normal 14px/1 FontAwesome Edit !important;\r\n  font-size: inherit;\r\n  text-rendering: auto;\r\n  -webkit-font-smoothing: antialiased;\r\n  -moz-osx-font-smoothing: grayscale;\r\n}"; });
+define('text!microservices/auth/login.html', ['module'], function(module) { module.exports = "<template>\r\n  <div>\r\n    <h1>Log In</h1>\r\n    <div class=\"col-sm-4\">\r\n      <form>\r\n        <div class=\"form-group\">\r\n          <label for=\"exampleInputEmail1\">Email address</label>\r\n          <input type=\"email\" class=\"form-control\" id=\"exampleInputEmail1\" placeholder=\"Email\" value.bind=\"userId\">\r\n        </div>\r\n        <div class=\"form-group\">\r\n          <label for=\"exampleInputPassword1\">Password</label>\r\n          <input type=\"password\" class=\"form-control\" id=\"exampleInputPassword1\" placeholder=\"Password\" value.bind=\"password\">\r\n        </div>\r\n        <button class=\"btn btn-primary\" click.trigger=\"login()\">Login</button>\r\n        <p style=\"color: red\">${errorMessage}</p>\r\n      </form>\r\n    </div>\r\n  </div>  \r\n</template>"; });
 define('text!resources/styles/minton/css/components.css', ['module'], function(module) { module.exports = "@import url(https://fonts.googleapis.com/css?family=Roboto:400,500,700);\r\n@import url(https://fonts.googleapis.com/css?family=Poppins:500,600);\r\n@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:600,400,700);\r\n/* ===========\r\n   Components List\r\n\r\n   - Buttons\r\n   - Panels\r\n   - Portlets\r\n   - Checkbox and radio\r\n   - Progressbars\r\n   - Carousel\r\n   - Tables\r\n   - Form Elements\r\n   - Calendar\r\n   - Widgets\r\n =============*/\r\n/* ===========\r\n   Buttons\r\n =============*/\r\n.btn {\r\n  border-radius: 2px;\r\n  padding: 6px 14px;\r\n}\r\n.btn-group-lg > .btn,\r\n.btn-lg {\r\n  padding: 10px 16px !important;\r\n  font-size: 16px;\r\n}\r\n.btn-group-sm > .btn,\r\n.btn-sm {\r\n  padding: 5px 10px !important;\r\n}\r\n.btn-group-xs > .btn,\r\n.btn-xs {\r\n  padding: 1px 5px !important;\r\n}\r\n.btn-group .btn + .btn,\r\n.btn-group .btn + .btn-group,\r\n.btn-group .btn-group + .btn,\r\n.btn-group .btn-group + .btn-group {\r\n  margin-left: 0px;\r\n}\r\n.btn-group.open .dropdown-toggle {\r\n  box-shadow: 0 0 0 100px rgba(0, 0, 0, 0.1) inset;\r\n}\r\n.btn-primary,\r\n.btn-success,\r\n.btn-info,\r\n.btn-warning,\r\n.btn-danger,\r\n.btn-inverse,\r\n.btn-purple,\r\n.btn-pink {\r\n  color: #ffffff !important;\r\n}\r\n.btn-default {\r\n  background-color: #dae6ec;\r\n  border-color: #dae6ec;\r\n}\r\n.btn-default:focus {\r\n  background-color: #dae6ec;\r\n  border-color: #C2CED4;\r\n}\r\n.btn-default:hover {\r\n  background-color: #dae6ec;\r\n  border-color: #C2CED4;\r\n}\r\n.btn-default:active {\r\n  background-color: #dae6ec;\r\n  border-color: #C2CED4;\r\n}\r\n.btn-default.active,\r\n.btn-default:active,\r\n.open > .dropdown-toggle.btn-default {\r\n  background-color: #dae6ec !important;\r\n  border-color: #C2CED4 !important;\r\n}\r\n.btn-primary {\r\n  background-color: #3bafda !important;\r\n  border: 1px solid #3bafda !important;\r\n}\r\n.btn-primary:hover,\r\n.btn-primary:focus,\r\n.btn-primary:active,\r\n.btn-primary.active,\r\n.btn-primary.focus,\r\n.btn-primary:active,\r\n.btn-primary:focus,\r\n.btn-primary:hover,\r\n.open > .dropdown-toggle.btn-primary {\r\n  background-color: #28a5d4 !important;\r\n  border: 1px solid #28a5d4 !important;\r\n}\r\n.btn-success {\r\n  background-color: #00b19d !important;\r\n  border: 1px solid #00b19d !important;\r\n}\r\n.btn-success:hover,\r\n.btn-success:focus,\r\n.btn-success:active,\r\n.btn-success.active,\r\n.btn-success.focus,\r\n.btn-success:active,\r\n.btn-success:focus,\r\n.btn-success:hover,\r\n.open > .dropdown-toggle.btn-success {\r\n  background-color: #009886 !important;\r\n  border: 1px solid #009886 !important;\r\n}\r\n.btn-info {\r\n  background-color: #3ddcf7 !important;\r\n  border: 1px solid #3ddcf7 !important;\r\n}\r\n.btn-info:hover,\r\n.btn-info:focus,\r\n.btn-info:active,\r\n.btn-info.active,\r\n.btn-info.focus,\r\n.btn-info:active,\r\n.btn-info:focus,\r\n.btn-info:hover,\r\n.open > .dropdown-toggle.btn-info {\r\n  background-color: #25d8f6 !important;\r\n  border: 1px solid #25d8f6 !important;\r\n}\r\n.btn-warning {\r\n  background-color: #ffaa00 !important;\r\n  border: 1px solid #ffaa00 !important;\r\n}\r\n.btn-warning:hover,\r\n.btn-warning:focus,\r\n.btn-warning:active,\r\n.btn-warning.active,\r\n.btn-warning.focus,\r\n.btn-warning:active,\r\n.btn-warning:focus,\r\n.btn-warning:hover,\r\n.open > .dropdown-toggle.btn-warning {\r\n  background-color: #e69900 !important;\r\n  border: 1px solid #e69900 !important;\r\n}\r\n.btn-danger {\r\n  background-color: #ef5350 !important;\r\n  border: 1px solid #ef5350 !important;\r\n}\r\n.btn-danger:active,\r\n.btn-danger:focus,\r\n.btn-danger:hover,\r\n.btn-danger.active,\r\n.btn-danger.focus,\r\n.btn-danger:active,\r\n.btn-danger:focus,\r\n.btn-danger:hover,\r\n.open > .dropdown-toggle.btn-danger {\r\n  background-color: #ed3c39 !important;\r\n  border: 1px solid #ed3c39 !important;\r\n}\r\n.btn-inverse {\r\n  background-color: #4c5667 !important;\r\n  border: 1px solid #4c5667 !important;\r\n}\r\n.btn-inverse:hover,\r\n.btn-inverse:focus,\r\n.btn-inverse:active,\r\n.btn-inverse.active,\r\n.btn-inverse.focus,\r\n.btn-inverse:active,\r\n.btn-inverse:focus,\r\n.btn-inverse:hover,\r\n.open > .dropdown-toggle.btn-inverse {\r\n  background-color: #414a58 !important;\r\n  border: 1px solid #414a58 !important;\r\n}\r\n.btn-purple {\r\n  background-color: #7266ba !important;\r\n  border: 1px solid #7266ba !important;\r\n}\r\n.btn-purple:hover,\r\n.btn-purple:focus,\r\n.btn-purple:active {\r\n  background-color: #6254b2 !important;\r\n  border: 1px solid #6254b2 !important;\r\n}\r\n.btn-pink {\r\n  background-color: #f76397 !important;\r\n  border: 1px solid #f76397 !important;\r\n}\r\n.btn-pink:hover,\r\n.btn-pink:focus,\r\n.btn-pink:active {\r\n  background-color: #f64b87 !important;\r\n  border: 1px solid #f64b87 !important;\r\n}\r\n.btn-custom {\r\n  border-bottom: 3px solid transparent;\r\n}\r\n.btn-custom.btn-default {\r\n  background-color: #dae6ec;\r\n  border-bottom: 2px solid #a4b6bf !important;\r\n}\r\n.btn-custom.btn-primary {\r\n  border-bottom: 2px solid #2494be !important;\r\n}\r\n.btn-custom.btn-success {\r\n  border-bottom: 2px solid #007e70 !important;\r\n}\r\n.btn-custom.btn-info {\r\n  border-bottom: 2px solid #08aac6 !important;\r\n}\r\n.btn-custom.btn-warning {\r\n  border-bottom: 2px solid #cc8800 !important;\r\n}\r\n.btn-custom.btn-danger {\r\n  border-bottom: 2px solid #c71612 !important;\r\n}\r\n.btn-custom.btn-inverse {\r\n  border-bottom: 2px solid #21252c !important;\r\n}\r\n.btn-custom.btn-purple {\r\n  border-bottom: 2px solid #443a80 !important;\r\n}\r\n.btn-custom.btn-pink {\r\n  border-bottom: 2px solid #e80c59 !important;\r\n}\r\n.btn-rounded {\r\n  border-radius: 2em;\r\n  padding: 6px 18px;\r\n}\r\n.fileupload {\r\n  overflow: hidden;\r\n  position: relative;\r\n}\r\n.fileupload input.upload {\r\n  cursor: pointer;\r\n  filter: alpha(opacity=0);\r\n  font-size: 20px;\r\n  margin: 0;\r\n  opacity: 0;\r\n  padding: 0;\r\n  position: absolute;\r\n  right: 0;\r\n  top: 0;\r\n}\r\n/* ===========\r\n   Panels\r\n =============*/\r\n.panel {\r\n  border-radius: 0;\r\n  margin-bottom: 20px;\r\n  background-color: #323b44;\r\n  border: 2px solid rgba(238, 238, 238, 0.1);\r\n  border-top: none;\r\n}\r\n.panel .panel-body {\r\n  padding: 20px;\r\n  color: rgba(255, 255, 255, 0.6);\r\n}\r\n.panel .panel-body p {\r\n  margin: 0px;\r\n}\r\n.panel .panel-body p + p {\r\n  margin-top: 15px;\r\n}\r\n.panel-heading {\r\n  border-radius: 0;\r\n  border: none !important;\r\n  padding: 10px 20px;\r\n  margin: 0 -2px;\r\n}\r\n.panel-default > .panel-heading {\r\n  background-color: rgba(255, 255, 255, 0.2);\r\n  border-bottom: none;\r\n}\r\n.panel-title {\r\n  font-size: 14px;\r\n  font-weight: 600;\r\n  margin-bottom: 0;\r\n  margin-top: 0;\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.03em;\r\n  color: #ffffff;\r\n}\r\n.panel-sub-title {\r\n  margin-bottom: 3px;\r\n  color: rgba(255, 255, 255, 0.6) !important;\r\n  margin-top: -3px;\r\n}\r\n.panel-footer {\r\n  background: transparent;\r\n  border-top: 1px solid rgba(238, 238, 238, 0.2);\r\n}\r\n.panel-color .panel-title {\r\n  color: #ffffff;\r\n}\r\n.panel-primary > .panel-heading {\r\n  background-color: #3bafda;\r\n}\r\n.panel-success > .panel-heading {\r\n  background-color: #00b19d;\r\n}\r\n.panel-info > .panel-heading {\r\n  background-color: #3ddcf7;\r\n}\r\n.panel-warning > .panel-heading {\r\n  background-color: #ffaa00;\r\n}\r\n.panel-danger > .panel-heading {\r\n  background-color: #ef5350;\r\n}\r\n.panel-purple > .panel-heading {\r\n  background-color: #7266ba;\r\n}\r\n.panel-pink > .panel-heading {\r\n  background-color: #f76397;\r\n}\r\n.panel-inverse > .panel-heading {\r\n  background-color: #4c5667;\r\n}\r\n.panel-border {\r\n  border-radius: 3px;\r\n}\r\n.panel-border .panel-heading {\r\n  background-color: transparent;\r\n  border-top: 3px solid #ccc !important;\r\n  border-radius: 3px;\r\n  padding: 10px 20px 0px;\r\n}\r\n.panel-border .panel-body {\r\n  padding: 15px 20px 20px 20px;\r\n}\r\n.panel-border.panel-primary .panel-heading {\r\n  border-color: #3bafda !important;\r\n  color: #3bafda !important;\r\n}\r\n.panel-border.panel-success .panel-heading {\r\n  border-color: #00b19d !important;\r\n  color: #00b19d !important;\r\n}\r\n.panel-border.panel-info .panel-heading {\r\n  border-color: #3ddcf7 !important;\r\n  color: #3ddcf7 !important;\r\n}\r\n.panel-border.panel-warning .panel-heading {\r\n  border-color: #ffaa00 !important;\r\n  color: #ffaa00 !important;\r\n}\r\n.panel-border.panel-danger .panel-heading {\r\n  border-color: #ef5350 !important;\r\n  color: #ef5350 !important;\r\n}\r\n.panel-border.panel-purple .panel-heading {\r\n  border-color: #7266ba !important;\r\n  color: #7266ba !important;\r\n}\r\n.panel-border.panel-pink .panel-heading {\r\n  border-color: #f76397 !important;\r\n  color: #f76397 !important;\r\n}\r\n.panel-border.panel-inverse .panel-heading {\r\n  border-color: #4c5667 !important;\r\n  color: #4c5667 !important;\r\n}\r\n.panel-group .panel .panel-heading a[data-toggle=collapse].collapsed:before {\r\n  content: '\\f067';\r\n}\r\n.panel-group .panel .panel-heading .accordion-toggle.collapsed:before {\r\n  content: '\\f067';\r\n}\r\n.panel-group .panel .panel-heading a[data-toggle=collapse] {\r\n  display: block;\r\n}\r\n.panel-group .panel .panel-heading a[data-toggle=collapse]:before {\r\n  content: '\\f068';\r\n  display: block;\r\n  float: right;\r\n  font-family: 'FontAwesome';\r\n  font-size: 14px;\r\n  text-align: right;\r\n  width: 25px;\r\n}\r\n.panel-group .panel .panel-heading .accordion-toggle {\r\n  display: block;\r\n}\r\n.panel-group .panel .panel-heading .accordion-toggle:before {\r\n  content: '\\f068';\r\n  display: block;\r\n  float: right;\r\n  font-family: 'FontAwesome';\r\n  font-size: 14px;\r\n  text-align: right;\r\n  width: 25px;\r\n}\r\n.panel-group .panel .panel-heading + .panel-collapse .panel-body {\r\n  border-top: none;\r\n}\r\n.panel-group .panel-heading {\r\n  padding: 12px 26px;\r\n}\r\n.panel-group.panel-group-joined .panel + .panel {\r\n  border-top: 1px solid rgba(255, 255, 255, 0.3);\r\n  margin-top: 0;\r\n}\r\n.panel-group-joined .panel-group .panel + .panel {\r\n  border-top: 1px solid #eeeeee;\r\n  margin-top: 0;\r\n}\r\n/* ===========\r\n   Portlets\r\n =============*/\r\n.portlet {\r\n  border: 2px solid rgba(238, 238, 238, 0.1);\r\n  -moz-transition: all 0.4s;\r\n  -o-transition: all 0.4s;\r\n  -webkit-transition: all 0.4s;\r\n  margin-bottom: 20px;\r\n  transition: all 0.4s;\r\n}\r\n.portlet .portlet-heading {\r\n  border-radius: 3px;\r\n  color: #ffffff;\r\n  padding: 12px 20px;\r\n  margin: -1px;\r\n}\r\n.portlet .portlet-heading .portlet-title {\r\n  color: #ffffff;\r\n  float: left;\r\n  font-size: 14px;\r\n  font-weight: 600;\r\n  margin-bottom: 0;\r\n  margin-top: 0;\r\n  text-transform: uppercase;\r\n  letter-spacing: 0.03em;\r\n}\r\n.portlet .portlet-heading .portlet-widgets {\r\n  display: inline-block;\r\n  float: right;\r\n  font-size: 15px;\r\n  line-height: 30px;\r\n  padding-left: 15px;\r\n  position: relative;\r\n  text-align: right;\r\n}\r\n.portlet .portlet-heading .portlet-widgets .divider {\r\n  margin: 0 5px;\r\n}\r\n.portlet .portlet-heading a {\r\n  color: #999999;\r\n}\r\n.portlet .portlet-body {\r\n  -moz-border-radius-bottomleft: 5px;\r\n  -moz-border-radius-bottomright: 5px;\r\n  -webkit-border-bottom-left-radius: 5px;\r\n  -webkit-border-bottom-right-radius: 5px;\r\n  border-bottom-left-radius: 5px;\r\n  border-bottom-right-radius: 5px;\r\n  padding: 15px;\r\n  color: #98a6ad;\r\n}\r\n.portlet .portlet-heading .portlet-widgets .collapsed .ion-minus-round:before {\r\n  content: \"\\f217\" !important;\r\n}\r\n.portlet .portlet-heading.bg-purple a,\r\n.portlet .portlet-heading.bg-info a,\r\n.portlet .portlet-heading.bg-success a,\r\n.portlet .portlet-heading.bg-primary a,\r\n.portlet .portlet-heading.bg-danger a,\r\n.portlet .portlet-heading.bg-warning a,\r\n.portlet .portlet-heading.bg-inverse a,\r\n.portlet .portlet-heading.bg-pink a {\r\n  color: #ffffff;\r\n}\r\n.panel-disabled {\r\n  background: rgba(238, 238, 238, 0.2);\r\n  cursor: progress;\r\n  bottom: 20px;\r\n  left: 10px;\r\n  position: absolute;\r\n  right: 10px;\r\n  top: 0;\r\n}\r\n.loader-1 {\r\n  width: 30px;\r\n  height: 30px;\r\n  background-color: #3bafda;\r\n  border-radius: 3px;\r\n  -moz-border-radius: 3px;\r\n  background-clip: padding-box;\r\n  animation: sk-rotateplane 1.2s infinite ease-in-out;\r\n  position: absolute;\r\n  left: 50%;\r\n  top: 50%;\r\n  margin-left: -15px;\r\n  margin-top: -15px;\r\n}\r\n@keyframes sk-rotateplane {\r\n  0% {\r\n    transform: perspective(120px) rotateX(0deg) rotateY(0deg);\r\n    -webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg);\r\n  }\r\n  50% {\r\n    transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);\r\n    -webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);\r\n  }\r\n  100% {\r\n    transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);\r\n    -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);\r\n  }\r\n}\r\n/* ===========\r\n   Checkbox and Radio\r\n =============*/\r\n.checkbox {\r\n  padding-left: 20px;\r\n}\r\n.checkbox label {\r\n  display: inline-block;\r\n  padding-left: 5px;\r\n  position: relative;\r\n}\r\n.checkbox label::before {\r\n  -o-transition: 0.3s ease-in-out;\r\n  -webkit-transition: 0.3s ease-in-out;\r\n  background-color: transparent;\r\n  border-radius: 3px;\r\n  border: 2px solid #98a6ad;\r\n  content: \"\";\r\n  display: inline-block;\r\n  height: 17px;\r\n  left: 0;\r\n  margin-left: -20px;\r\n  position: absolute;\r\n  transition: 0.3s ease-in-out;\r\n  width: 17px;\r\n  outline: none !important;\r\n}\r\n.checkbox label::after {\r\n  color: #eeeeee;\r\n  display: inline-block;\r\n  font-size: 11px;\r\n  height: 16px;\r\n  left: 0;\r\n  margin-left: -20px;\r\n  padding-left: 3px;\r\n  padding-top: 1px;\r\n  position: absolute;\r\n  top: 0;\r\n  width: 16px;\r\n}\r\n.checkbox input[type=\"checkbox\"] {\r\n  cursor: pointer;\r\n  opacity: 0;\r\n  z-index: 1;\r\n  outline: none !important;\r\n}\r\n.checkbox input[type=\"checkbox\"]:disabled + label {\r\n  opacity: 0.65;\r\n}\r\n.checkbox input[type=\"checkbox\"]:focus + label::before {\r\n  outline-offset: -2px;\r\n  outline: none;\r\n}\r\n.checkbox input[type=\"checkbox\"]:checked + label::after {\r\n  content: \"\\f00c\";\r\n  font-family: 'FontAwesome';\r\n}\r\n.checkbox input[type=\"checkbox\"]:disabled + label::before {\r\n  background-color: #eeeeee;\r\n  cursor: not-allowed;\r\n}\r\n.checkbox.checkbox-circle label::before {\r\n  border-radius: 50%;\r\n}\r\n.checkbox.checkbox-inline {\r\n  margin-top: 0;\r\n}\r\n.checkbox.checkbox-single label {\r\n  height: 17px;\r\n}\r\n.checkbox-primary input[type=\"checkbox\"]:checked + label::before {\r\n  background-color: #3bafda;\r\n  border-color: #3bafda;\r\n}\r\n.checkbox-primary input[type=\"checkbox\"]:checked + label::after {\r\n  color: #ffffff;\r\n}\r\n.checkbox-danger input[type=\"checkbox\"]:checked + label::before {\r\n  background-color: #ef5350;\r\n  border-color: #ef5350;\r\n}\r\n.checkbox-danger input[type=\"checkbox\"]:checked + label::after {\r\n  color: #ffffff;\r\n}\r\n.checkbox-info input[type=\"checkbox\"]:checked + label::before {\r\n  background-color: #3ddcf7;\r\n  border-color: #3ddcf7;\r\n}\r\n.checkbox-info input[type=\"checkbox\"]:checked + label::after {\r\n  color: #ffffff;\r\n}\r\n.checkbox-warning input[type=\"checkbox\"]:checked + label::before {\r\n  background-color: #ffaa00;\r\n  border-color: #ffaa00;\r\n}\r\n.checkbox-warning input[type=\"checkbox\"]:checked + label::after {\r\n  color: #ffffff;\r\n}\r\n.checkbox-success input[type=\"checkbox\"]:checked + label::before {\r\n  background-color: #00b19d;\r\n  border-color: #00b19d;\r\n}\r\n.checkbox-success input[type=\"checkbox\"]:checked + label::after {\r\n  color: #ffffff;\r\n}\r\n.checkbox-purple input[type=\"checkbox\"]:checked + label::before {\r\n  background-color: #7266ba;\r\n  border-color: #7266ba;\r\n}\r\n.checkbox-purple input[type=\"checkbox\"]:checked + label::after {\r\n  color: #ffffff;\r\n}\r\n.checkbox-pink input[type=\"checkbox\"]:checked + label::before {\r\n  background-color: #f76397;\r\n  border-color: #f76397;\r\n}\r\n.checkbox-pink input[type=\"checkbox\"]:checked + label::after {\r\n  color: #ffffff;\r\n}\r\n.checkbox-inverse input[type=\"checkbox\"]:checked + label::before {\r\n  background-color: #4c5667;\r\n  border-color: #4c5667;\r\n}\r\n.checkbox-inverse input[type=\"checkbox\"]:checked + label::after {\r\n  color: #ffffff;\r\n}\r\n.radio {\r\n  padding-left: 20px;\r\n}\r\n.radio label {\r\n  display: inline-block;\r\n  padding-left: 5px;\r\n  position: relative;\r\n}\r\n.radio label::before {\r\n  -o-transition: border 0.5s ease-in-out;\r\n  -webkit-transition: border 0.5s ease-in-out;\r\n  background-color: transparent;\r\n  border-radius: 50%;\r\n  border: 2px solid #98a6ad;\r\n  content: \"\";\r\n  display: inline-block;\r\n  height: 17px;\r\n  left: 0;\r\n  margin-left: -20px;\r\n  outline: none !important;\r\n  position: absolute;\r\n  transition: border 0.5s ease-in-out;\r\n  width: 17px;\r\n}\r\n.radio label::after {\r\n  -moz-transition: -moz-transform 0.1s cubic-bezier(0.8, -0.33, 0.2, 1.33);\r\n  -ms-transform: scale(0, 0);\r\n  -o-transform: scale(0, 0);\r\n  -o-transition: -o-transform 0.1s cubic-bezier(0.8, -0.33, 0.2, 1.33);\r\n  -webkit-transform: scale(0, 0);\r\n  -webkit-transition: -webkit-transform 0.1s cubic-bezier(0.8, -0.33, 0.2, 1.33);\r\n  background-color: #98a6ad;\r\n  border-radius: 50%;\r\n  content: \" \";\r\n  display: inline-block;\r\n  height: 11px;\r\n  left: 3px;\r\n  margin-left: -20px;\r\n  position: absolute;\r\n  top: 3px;\r\n  transform: scale(0, 0);\r\n  transition: transform 0.1s cubic-bezier(0.8, -0.33, 0.2, 1.33);\r\n  width: 11px;\r\n}\r\n.radio input[type=\"radio\"] {\r\n  cursor: pointer;\r\n  opacity: 0;\r\n  z-index: 1;\r\n  outline: none !important;\r\n}\r\n.radio input[type=\"radio\"]:disabled + label {\r\n  opacity: 0.65;\r\n}\r\n.radio input[type=\"radio\"]:focus + label::before {\r\n  outline-offset: -2px;\r\n  outline: 5px auto -webkit-focus-ring-color;\r\n  outline: thin dotted;\r\n}\r\n.radio input[type=\"radio\"]:checked + label::after {\r\n  transform: scale(1, 1);\r\n}\r\n.radio input[type=\"radio\"]:disabled + label::before {\r\n  cursor: not-allowed;\r\n}\r\n.radio.radio-inline {\r\n  margin-top: 0;\r\n}\r\n.radio.radio-single label {\r\n  height: 17px;\r\n}\r\n.radio-primary input[type=\"radio\"] + label::after {\r\n  background-color: #3bafda;\r\n}\r\n.radio-primary input[type=\"radio\"]:checked + label::before {\r\n  border-color: #3bafda;\r\n}\r\n.radio-primary input[type=\"radio\"]:checked + label::after {\r\n  background-color: #3bafda;\r\n}\r\n.radio-danger input[type=\"radio\"] + label::after {\r\n  background-color: #ef5350;\r\n}\r\n.radio-danger input[type=\"radio\"]:checked + label::before {\r\n  border-color: #ef5350;\r\n}\r\n.radio-danger input[type=\"radio\"]:checked + label::after {\r\n  background-color: #ef5350;\r\n}\r\n.radio-info input[type=\"radio\"] + label::after {\r\n  background-color: #3ddcf7;\r\n}\r\n.radio-info input[type=\"radio\"]:checked + label::before {\r\n  border-color: #3ddcf7;\r\n}\r\n.radio-info input[type=\"radio\"]:checked + label::after {\r\n  background-color: #3ddcf7;\r\n}\r\n.radio-warning input[type=\"radio\"] + label::after {\r\n  background-color: #ffaa00;\r\n}\r\n.radio-warning input[type=\"radio\"]:checked + label::before {\r\n  border-color: #ffaa00;\r\n}\r\n.radio-warning input[type=\"radio\"]:checked + label::after {\r\n  background-color: #ffaa00;\r\n}\r\n.radio-success input[type=\"radio\"] + label::after {\r\n  background-color: #00b19d;\r\n}\r\n.radio-success input[type=\"radio\"]:checked + label::before {\r\n  border-color: #00b19d;\r\n}\r\n.radio-success input[type=\"radio\"]:checked + label::after {\r\n  background-color: #00b19d;\r\n}\r\n.radio-purple input[type=\"radio\"] + label::after {\r\n  background-color: #7266ba;\r\n}\r\n.radio-purple input[type=\"radio\"]:checked + label::before {\r\n  border-color: #7266ba;\r\n}\r\n.radio-purple input[type=\"radio\"]:checked + label::after {\r\n  background-color: #7266ba;\r\n}\r\n.radio-pink input[type=\"radio\"] + label::after {\r\n  background-color: #f76397;\r\n}\r\n.radio-pink input[type=\"radio\"]:checked + label::before {\r\n  border-color: #f76397;\r\n}\r\n.radio-pink input[type=\"radio\"]:checked + label::after {\r\n  background-color: #f76397;\r\n}\r\n.radio-inverse input[type=\"radio\"] + label::after {\r\n  background-color: #4c5667;\r\n}\r\n.radio-inverse input[type=\"radio\"]:checked + label::before {\r\n  border-color: #4c5667;\r\n}\r\n.radio-inverse input[type=\"radio\"]:checked + label::after {\r\n  background-color: #4c5667;\r\n}\r\n/* ===========\r\n   Progressbars\r\n =============*/\r\n.progress {\r\n  -webkit-box-shadow: none !important;\r\n  background-color: rgba(152, 166, 173, 0.4);\r\n  box-shadow: none !important;\r\n  height: 10px;\r\n  margin-bottom: 18px;\r\n  overflow: hidden;\r\n}\r\n.progress-bar {\r\n  box-shadow: none;\r\n  font-size: 8px;\r\n  font-weight: 600;\r\n  line-height: 12px;\r\n}\r\n.progress.progress-sm {\r\n  height: 5px !important;\r\n}\r\n.progress.progress-sm .progress-bar {\r\n  font-size: 8px;\r\n  line-height: 5px;\r\n}\r\n.progress.progress-md {\r\n  height: 15px !important;\r\n}\r\n.progress.progress-md .progress-bar {\r\n  font-size: 10.8px;\r\n  line-height: 14.4px;\r\n}\r\n.progress.progress-lg {\r\n  height: 20px !important;\r\n}\r\n.progress.progress-lg .progress-bar {\r\n  font-size: 12px;\r\n  line-height: 20px;\r\n}\r\n.progress-bar-primary {\r\n  background-color: #3bafda;\r\n}\r\n.progress-bar-success {\r\n  background-color: #00b19d;\r\n}\r\n.progress-bar-info {\r\n  background-color: #3ddcf7;\r\n}\r\n.progress-bar-warning {\r\n  background-color: #ffaa00;\r\n}\r\n.progress-bar-danger {\r\n  background-color: #ef5350;\r\n}\r\n.progress-bar-inverse {\r\n  background-color: #4c5667;\r\n}\r\n.progress-bar-purple {\r\n  background-color: #7266ba;\r\n}\r\n.progress-bar-pink {\r\n  background-color: #f76397;\r\n}\r\n.progress-animated {\r\n  -webkit-animation-duration: 5s;\r\n  -webkit-animation-name: animationProgress;\r\n  -webkit-transition: 5s all;\r\n  animation-duration: 5s;\r\n  animation-name: animationProgress;\r\n  transition: 5s all;\r\n}\r\n/* ===========\r\n   Carousel\r\n =============*/\r\n.carousel-control {\r\n  width: 10%;\r\n}\r\n.carousel-control span {\r\n  position: absolute;\r\n  top: 50%;\r\n  /* pushes the icon in the middle of the height */\r\n  z-index: 5;\r\n  display: inline-block;\r\n  font-size: 30px;\r\n}\r\n.carousel-indicators li {\r\n  border: 2px solid #ffffff;\r\n}\r\n/* ===========\r\n   Tables\r\n =============*/\r\n.table {\r\n  margin-bottom: 10px;\r\n}\r\ntbody {\r\n  color: rgba(255, 255, 255, 0.4);\r\n}\r\nth {\r\n  color: rgba(255, 255, 255, 0.7);\r\n  font-size: 15px;\r\n  font-weight: 500;\r\n}\r\n.table > tbody > tr > td,\r\n.table > tbody > tr > th,\r\n.table > tfoot > tr > td,\r\n.table > tfoot > tr > th,\r\n.table > thead > tr > td,\r\n.table > thead > tr > th {\r\n  border-top: 1px solid rgba(255, 255, 255, 0.1);\r\n}\r\n.table > thead > tr > th {\r\n  border-bottom: 2px solid rgba(255, 255, 255, 0.1);\r\n}\r\n.table-hover > tbody > tr:hover {\r\n  background-color: #323b44;\r\n}\r\n.table-striped > tbody > tr:nth-of-type(odd),\r\n.table-hover > tbody > tr:hover,\r\n.table > thead > tr > td.active,\r\n.table > tbody > tr > td.active,\r\n.table > tfoot > tr > td.active,\r\n.table > thead > tr > th.active,\r\n.table > tbody > tr > th.active,\r\n.table > tfoot > tr > th.active,\r\n.table > thead > tr.active > td,\r\n.table > tbody > tr.active > td,\r\n.table > tfoot > tr.active > td,\r\n.table > thead > tr.active > th,\r\n.table > tbody > tr.active > th,\r\n.table > tfoot > tr.active > th {\r\n  background-color: #323b44 !important;\r\n}\r\n.table > tbody > tr.success > td,\r\n.table > tbody > tr.success > th,\r\n.table > tbody > tr > td.success,\r\n.table > tbody > tr > th.success,\r\n.table > tfoot > tr.success > td,\r\n.table > tfoot > tr.success > th,\r\n.table > tfoot > tr > td.success,\r\n.table > tfoot > tr > th.success,\r\n.table > thead > tr.success > td,\r\n.table > thead > tr.success > th,\r\n.table > thead > tr > td.success,\r\n.table > thead > tr > th.success {\r\n  background-color: rgba(0, 177, 157, 0.15);\r\n}\r\n.table > tbody > tr.info > td,\r\n.table > tbody > tr.info > th,\r\n.table > tbody > tr > td.info,\r\n.table > tbody > tr > th.info,\r\n.table > tfoot > tr.info > td,\r\n.table > tfoot > tr.info > th,\r\n.table > tfoot > tr > td.info,\r\n.table > tfoot > tr > th.info,\r\n.table > thead > tr.info > td,\r\n.table > thead > tr.info > th,\r\n.table > thead > tr > td.info,\r\n.table > thead > tr > th.info {\r\n  background-color: rgba(61, 220, 247, 0.15);\r\n}\r\n.table > tbody > tr.warning > td,\r\n.table > tbody > tr.warning > th,\r\n.table > tbody > tr > td.warning,\r\n.table > tbody > tr > th.warning,\r\n.table > tfoot > tr.warning > td,\r\n.table > tfoot > tr.warning > th,\r\n.table > tfoot > tr > td.warning,\r\n.table > tfoot > tr > th.warning,\r\n.table > thead > tr.warning > td,\r\n.table > thead > tr.warning > th,\r\n.table > thead > tr > td.warning,\r\n.table > thead > tr > th.warning {\r\n  background-color: rgba(255, 170, 0, 0.15);\r\n}\r\n.table > tbody > tr.danger > td,\r\n.table > tbody > tr.danger > th,\r\n.table > tbody > tr > td.danger,\r\n.table > tbody > tr > th.danger,\r\n.table > tfoot > tr.danger > td,\r\n.table > tfoot > tr.danger > th,\r\n.table > tfoot > tr > td.danger,\r\n.table > tfoot > tr > th.danger,\r\n.table > thead > tr.danger > td,\r\n.table > thead > tr.danger > th,\r\n.table > thead > tr > td.danger,\r\n.table > thead > tr > th.danger {\r\n  background-color: rgba(239, 83, 80, 0.15);\r\n}\r\n.table-bordered {\r\n  border: 1px solid rgba(238, 238, 238, 0.3);\r\n}\r\n.table-striped > tbody > tr:nth-of-type(odd) {\r\n  background-color: #323b44;\r\n}\r\n.table-bordered > thead > tr > th,\r\n.table-bordered > tbody > tr > th,\r\n.table-bordered > tfoot > tr > th,\r\n.table-bordered > thead > tr > td,\r\n.table-bordered > tbody > tr > td,\r\n.table-bordered > tfoot > tr > td {\r\n  border: 1px solid rgba(255, 255, 255, 0.2);\r\n}\r\n.modal-block {\r\n  background: transparent;\r\n  margin: 40px auto;\r\n  max-width: 600px;\r\n  padding: 0;\r\n  position: relative;\r\n  text-align: left;\r\n}\r\n/* Data table */\r\n#datatable-editable .actions a {\r\n  padding: 5px;\r\n}\r\n#datatable-editable .form-control {\r\n  background-color: transparent;\r\n  width: 100%;\r\n}\r\n#datatable-editable .fa-trash-o {\r\n  color: #ef5350;\r\n}\r\n#datatable-editable .fa-times {\r\n  color: #ef5350;\r\n}\r\n#datatable-editable .fa-pencil {\r\n  color: #29b6f6;\r\n}\r\n#datatable-editable .fa-save {\r\n  color: #33b86c;\r\n}\r\n#datatable td {\r\n  font-weight: normal;\r\n}\r\ndiv.dataTables_paginate ul.pagination {\r\n  margin-top: 30px;\r\n}\r\ndiv.dataTables_info {\r\n  padding-top: 38px;\r\n}\r\n.dt-buttons {\r\n  float: left;\r\n}\r\ndiv#datatable-buttons_info {\r\n  float: left;\r\n}\r\n/* Fixed Header */\r\n.fixedHeader-floating {\r\n  top: 70px !important;\r\n}\r\n/* Key table */\r\ntable.dataTable th.focus,\r\ntable.dataTable td.focus {\r\n  outline: 3px solid #3bafda !important;\r\n  outline-offset: -1px;\r\n}\r\n.fixedHeader-floating {\r\n  border: none !important;\r\n}\r\n.fixedHeader-floating .sorting,\r\n.fixedHeader-floating .sorting_asc {\r\n  background-color: #323b44;\r\n  border-color: rgba(238, 238, 238, 0.3);\r\n}\r\ndiv.DTS tbody tr.even {\r\n  background-color: #272e35;\r\n}\r\ndiv.DTS div.dataTables_scrollBody {\r\n  background: none !important;\r\n}\r\n/* Responsive table */\r\n.table-rep-plugin .table-responsive {\r\n  border: none !important;\r\n}\r\n.table-rep-plugin .dropdown-menu li.checkbox-row {\r\n  color: #ffffff !important;\r\n  background-color: transparent !important;\r\n}\r\n.table-rep-plugin tbody th {\r\n  font-size: 14px;\r\n  font-weight: normal;\r\n}\r\n.table-rep-plugin .checkbox-row {\r\n  padding-left: 40px;\r\n}\r\n.table-rep-plugin .checkbox-row label {\r\n  display: inline-block;\r\n  padding-left: 5px;\r\n  position: relative;\r\n}\r\n.table-rep-plugin .checkbox-row label::before {\r\n  -o-transition: 0.3s ease-in-out;\r\n  -webkit-transition: 0.3s ease-in-out;\r\n  background-color: #ffffff;\r\n  border-radius: 3px;\r\n  border: 1px solid #cccccc;\r\n  content: \"\";\r\n  display: inline-block;\r\n  height: 17px;\r\n  left: 0;\r\n  margin-left: -20px;\r\n  position: absolute;\r\n  transition: 0.3s ease-in-out;\r\n  width: 17px;\r\n  outline: none !important;\r\n}\r\n.table-rep-plugin .checkbox-row label::after {\r\n  color: #555555;\r\n  display: inline-block;\r\n  font-size: 11px;\r\n  height: 16px;\r\n  left: 0;\r\n  margin-left: -20px;\r\n  padding-left: 3px;\r\n  padding-top: 1px;\r\n  position: absolute;\r\n  top: -1px;\r\n  width: 16px;\r\n}\r\n.table-rep-plugin .checkbox-row input[type=\"checkbox\"] {\r\n  cursor: pointer;\r\n  opacity: 0;\r\n  z-index: 1;\r\n  outline: none !important;\r\n}\r\n.table-rep-plugin .checkbox-row input[type=\"checkbox\"]:disabled + label {\r\n  opacity: 0.65;\r\n}\r\n.table-rep-plugin .checkbox-row input[type=\"checkbox\"]:focus + label::before {\r\n  outline-offset: -2px;\r\n  outline: none;\r\n}\r\n.table-rep-plugin .checkbox-row input[type=\"checkbox\"]:checked + label::after {\r\n  content: \"\\f00c\";\r\n  font-family: 'FontAwesome';\r\n}\r\n.table-rep-plugin .checkbox-row input[type=\"checkbox\"]:disabled + label::before {\r\n  background-color: #eeeeee;\r\n  cursor: not-allowed;\r\n}\r\n.table-rep-plugin .checkbox-row input[type=\"checkbox\"]:checked + label::before {\r\n  background-color: #3bafda;\r\n  border-color: #3bafda;\r\n}\r\n.table-rep-plugin .checkbox-row input[type=\"checkbox\"]:checked + label::after {\r\n  color: #ffffff;\r\n}\r\n/* Tablesaw */\r\n.tablesaw thead {\r\n  background: rgba(255, 255, 255, 0.05);\r\n  background-image: none;\r\n  border: none;\r\n}\r\n.tablesaw thead th {\r\n  text-shadow: none;\r\n  letter-spacing: 0.06em;\r\n  color: rgba(255, 255, 255, 0.7) !important;\r\n}\r\n.tablesaw thead tr:first-child th {\r\n  padding-top: 1.1em;\r\n  padding-bottom: 0.9em;\r\n  font-weight: 600;\r\n  font-family: inherit;\r\n  border: none;\r\n}\r\n.tablesaw td,\r\n.tablesaw tbody th {\r\n  font-size: inherit;\r\n  line-height: inherit;\r\n  padding: 10px !important;\r\n}\r\n.tablesaw-stack tbody tr,\r\n.tablesaw tbody tr {\r\n  border-bottom: none;\r\n}\r\n.tablesaw-swipe .tablesaw-cell-persist {\r\n  border-right: 1px solid rgba(255, 255, 255, 0.1);\r\n}\r\n.tablesaw-sortable .tablesaw-sortable-head.tablesaw-sortable-ascending button:after,\r\n.tablesaw-sortable .tablesaw-sortable-head.tablesaw-sortable-descending button:after {\r\n  font-family: FontAwesome;\r\n  font-size: 10px;\r\n}\r\n.tablesaw-sortable .tablesaw-sortable-head.tablesaw-sortable-ascending button:after {\r\n  content: \"\\f176\";\r\n}\r\n.tablesaw-sortable .tablesaw-sortable-head.tablesaw-sortable-descending button:after {\r\n  content: \"\\f175\";\r\n}\r\n.tablesaw-bar .btn-select.btn-small:after,\r\n.tablesaw-bar .btn-select.btn-micro:after {\r\n  font-size: 8px;\r\n  padding-right: 10px;\r\n}\r\n.tablesaw-swipe .tablesaw-cell-persist {\r\n  box-shadow: none;\r\n}\r\n.tablesaw-enhanced .tablesaw-bar .btn {\r\n  text-shadow: none;\r\n  background-image: none;\r\n  color: rgba(255, 255, 255, 0.7) !important;\r\n}\r\n.tablesaw-enhanced .tablesaw-bar .btn.btn-select:hover {\r\n  background: transparent;\r\n}\r\n.tablesaw-enhanced .tablesaw-bar .btn:hover,\r\n.tablesaw-enhanced .tablesaw-bar .btn:focus,\r\n.tablesaw-enhanced .tablesaw-bar .btn:active {\r\n  color: #3bafda !important;\r\n  background-color: #f5f5f5;\r\n  outline: none !important;\r\n  box-shadow: none !important;\r\n  background-image: none;\r\n}\r\n/* Footable */\r\n.footable-odd {\r\n  background-color: #2e363e;\r\n}\r\n/* Responsive table */\r\ntable.focus-on tbody tr.unfocused th,\r\ntable.focus-on tbody tr.unfocused td {\r\n  color: rgba(255, 255, 255, 0.25);\r\n}\r\ntable.focus-on tbody tr.focused th {\r\n  background-color: #3bafda;\r\n  color: #ffffff;\r\n}\r\ntable.focus-on tbody tr.focused td {\r\n  background-color: #3bafda;\r\n  color: #ffffff;\r\n}\r\n.table-rep-plugin .sticky-table-header.fixed-solution {\r\n  top: 70px !important;\r\n  background-color: #272e35;\r\n  border: 0;\r\n}\r\n/* =============\r\n     Form elements\r\n  ============= */\r\n.error {\r\n  color: #ef5350;\r\n  font-size: 12px;\r\n  font-weight: 500;\r\n}\r\n.parsley-error {\r\n  border-color: #ef5350 !important;\r\n}\r\n.parsley-errors-list {\r\n  display: none;\r\n  margin: 0;\r\n  padding: 0;\r\n}\r\n.parsley-errors-list.filled {\r\n  display: block;\r\n}\r\n.parsley-errors-list > li {\r\n  font-size: 12px;\r\n  list-style: none;\r\n  color: #f6504d;\r\n}\r\n/* Datepicker */\r\n.datepicker {\r\n  padding: 8px;\r\n}\r\n.datepicker th {\r\n  font-size: 14px !important;\r\n}\r\n.datepicker table tr td.today,\r\n.datepicker table tr td.today:hover,\r\n.datepicker table tr td.today.disabled,\r\n.datepicker table tr td.today.disabled:hover,\r\n.datepicker table tr td.selected,\r\n.datepicker table tr td.selected:hover,\r\n.datepicker table tr td.selected.disabled,\r\n.datepicker table tr td.selected.disabled:hover,\r\n.datepicker table tr td span.active,\r\n.datepicker table tr td span.active:hover,\r\n.datepicker table tr td span.active.disabled,\r\n.datepicker table tr td span.active.disabled:hover {\r\n  background-image: none;\r\n}\r\n.datepicker table tr td span.active:hover,\r\n.datepicker table tr td span.active:hover:hover,\r\n.datepicker table tr td span.active.disabled:hover,\r\n.datepicker table tr td span.active.disabled:hover:hover,\r\n.datepicker table tr td span.active:active,\r\n.datepicker table tr td span.active:hover:active,\r\n.datepicker table tr td span.active.disabled:active,\r\n.datepicker table tr td span.active.disabled:hover:active,\r\n.datepicker table tr td span.active.active,\r\n.datepicker table tr td span.active:hover.active,\r\n.datepicker table tr td span.active.disabled.active,\r\n.datepicker table tr td span.active.disabled:hover.active,\r\n.datepicker table tr td span.active.disabled,\r\n.datepicker table tr td span.active:hover.disabled,\r\n.datepicker table tr td span.active.disabled.disabled,\r\n.datepicker table tr td span.active.disabled:hover.disabled,\r\n.datepicker table tr td span.active[disabled],\r\n.datepicker table tr td span.active:hover[disabled],\r\n.datepicker table tr td span.active.disabled[disabled],\r\n.datepicker table tr td span.active.disabled:hover[disabled] {\r\n  background-color: #3bafda;\r\n}\r\n.datepicker table tr td.active,\r\n.datepicker table tr td.active:hover,\r\n.datepicker table tr td.active.disabled,\r\n.datepicker table tr td.active.disabled:hover {\r\n  background-color: #3bafda !important;\r\n  background-image: none;\r\n  box-shadow: none;\r\n  text-shadow: none;\r\n}\r\n.datepicker thead tr:first-child th:hover,\r\n.datepicker tfoot tr th:hover {\r\n  background-color: #1c2127;\r\n}\r\n.datepicker-inline {\r\n  border: 2px solid rgba(238, 238, 238, 0.3);\r\n}\r\n.daterangepicker td.active,\r\n.daterangepicker td.active:hover {\r\n  background-color: #3bafda;\r\n  border-color: #3bafda;\r\n}\r\n.daterangepicker .input-mini.active {\r\n  border: 1px solid #AAAAAA;\r\n}\r\n.daterangepicker .ranges li {\r\n  border-radius: 2px;\r\n  -moz-border-radius: 2px;\r\n  background-clip: padding-box;\r\n  color: #98a6ad;\r\n  font-weight: 600;\r\n  font-size: 12px;\r\n  border-color: #323b44;\r\n  background-color: #323b44;\r\n}\r\n.daterangepicker select.hourselect,\r\n.daterangepicker select.minuteselect,\r\n.daterangepicker select.secondselect,\r\n.daterangepicker select.ampmselect {\r\n  border: 1px solid #e3e3e3;\r\n  padding: 2px;\r\n  width: 60px;\r\n}\r\n.daterangepicker .ranges li.active,\r\n.daterangepicker .ranges li:hover {\r\n  background-color: #3bafda;\r\n  border: 1px solid #3bafda;\r\n}\r\n.search-input {\r\n  margin-bottom: 10px;\r\n}\r\n.ms-selectable {\r\n  box-shadow: none;\r\n  outline: none !important;\r\n}\r\n.ms-container .ms-list.ms-focus {\r\n  box-shadow: none;\r\n}\r\n.ms-container .ms-selectable li.ms-hover {\r\n  background-color: #3bafda;\r\n}\r\n.ms-container .ms-selection li.ms-hover {\r\n  background-color: #3bafda;\r\n}\r\n.note-editor {\r\n  border: 2px solid rgba(255, 255, 255, 0.2);\r\n  position: relative;\r\n  color: #98a6ad;\r\n}\r\n.note-editor .note-toolbar {\r\n  background-color: transparent;\r\n  border-bottom: 1px solid #eeeeee;\r\n  margin: 0;\r\n}\r\n.note-editor .note-statusbar {\r\n  background-color: transparent;\r\n}\r\n.note-editor .note-statusbar .note-resizebar {\r\n  border-top: none;\r\n  height: 15px;\r\n  padding-top: 3px;\r\n}\r\n.note-editor .note-editing-area .note-editable {\r\n  background: transparent;\r\n  color: #98a6ad;\r\n}\r\n.note-popover .popover .popover-content .note-color .dropdown-menu .btn-group .note-palette-title,\r\n.panel-heading.note-toolbar .note-color .dropdown-menu .btn-group .note-palette-title,\r\n.note-popover .popover .popover-content .note-color .dropdown-menu .btn-group .note-color-reset,\r\n.panel-heading.note-toolbar .note-color .dropdown-menu .btn-group .note-color-reset {\r\n  color: #323b44;\r\n}\r\n.note-popover .popover .popover-content {\r\n  padding: 5px 0 10px 5px;\r\n}\r\n.note-toolbar {\r\n  padding: 5px 0 10px 5px;\r\n}\r\n/* Timepicker */\r\n.bootstrap-timepicker-widget table td a:hover {\r\n  background-color: transparent;\r\n  border-color: transparent;\r\n  border-radius: 4px;\r\n  color: #3bafda;\r\n  text-decoration: none;\r\n}\r\n.editor-horizontal .popover-content {\r\n  padding: 9px 30px;\r\n}\r\n.datepicker table tr td.active,\r\n.datepicker table tr td.active:hover,\r\n.datepicker table tr td.active.disabled,\r\n.datepicker table tr td.active.disabled:hover {\r\n  background-color: #3bafda !important;\r\n  background-image: none;\r\n  box-shadow: none;\r\n}\r\n/* Dropzone */\r\n.dropzone {\r\n  min-height: 230px;\r\n  border: 2px dashed rgba(255, 255, 255, 0.2);\r\n  background: transparent;\r\n  border-radius: 6px;\r\n}\r\n.dropzone .dz-message {\r\n  font-size: 30px;\r\n}\r\n/* =============\r\n   Calendar\r\n============= */\r\n.calendar {\r\n  float: left;\r\n  margin-bottom: 0px;\r\n}\r\n.fc-view {\r\n  margin-top: 30px;\r\n}\r\n.none-border .modal-footer {\r\n  border-top: none;\r\n}\r\n.fc-toolbar {\r\n  margin-bottom: 5px;\r\n  margin-top: 15px;\r\n}\r\n.fc-toolbar h2 {\r\n  font-size: 18px;\r\n  font-weight: 600;\r\n  line-height: 30px;\r\n  text-transform: uppercase;\r\n}\r\n.fc-day {\r\n  background: transparent;\r\n}\r\n.fc-toolbar .fc-state-active,\r\n.fc-toolbar .ui-state-active,\r\n.fc-toolbar button:focus,\r\n.fc-toolbar button:hover,\r\n.fc-toolbar .ui-state-hover {\r\n  z-index: 0;\r\n}\r\n.fc-widget-header {\r\n  border: 1px solid #f5f5f5;\r\n}\r\n.fc-widget-content {\r\n  border: 1px solid #f5f5f5;\r\n}\r\n.fc th.fc-widget-header {\r\n  background: rgba(255, 255, 255, 0.2);\r\n  font-size: 14px;\r\n  line-height: 20px;\r\n  padding: 10px 0px;\r\n  text-transform: uppercase;\r\n}\r\n.fc-unthemed th,\r\n.fc-unthemed td,\r\n.fc-unthemed thead,\r\n.fc-unthemed tbody,\r\n.fc-unthemed .fc-divider,\r\n.fc-unthemed .fc-row,\r\n.fc-unthemed .fc-popover {\r\n  background-color: transparent;\r\n  border-color: rgba(255, 255, 255, 0.1);\r\n}\r\n.fc-button {\r\n  background: #ffffff;\r\n  border: 1px solid #f5f5f5;\r\n  color: #555555;\r\n  text-transform: capitalize;\r\n}\r\n.fc-text-arrow {\r\n  font-family: inherit;\r\n  font-size: 16px;\r\n}\r\n.fc-state-hover {\r\n  background: #F5F5F5;\r\n}\r\n.fc-state-highlight {\r\n  background: #f0f0f0;\r\n}\r\n.fc-cell-overlay {\r\n  background: #f0f0f0;\r\n}\r\n.fc-unthemed .fc-today {\r\n  background: transparent;\r\n}\r\n.fc-event {\r\n  border-radius: 2px;\r\n  border: none;\r\n  cursor: move;\r\n  font-size: 13px;\r\n  margin: 5px 7px;\r\n  padding: 5px 5px;\r\n  text-align: center;\r\n}\r\n.external-event {\r\n  color: #ffffff;\r\n  cursor: move;\r\n  margin: 10px 0;\r\n  padding: 6px 10px;\r\n}\r\n.fc-basic-view td.fc-week-number span {\r\n  padding-right: 5px;\r\n}\r\n.fc-basic-view td.fc-day-number {\r\n  padding-right: 5px;\r\n}\r\n/* ===========\r\n   Widgets\r\n =============*/\r\n/* Inbox-widget */\r\n.inbox-widget .inbox-item {\r\n  border-bottom: 1px solid #323b44;\r\n  overflow: hidden;\r\n  padding: 10px 0;\r\n  position: relative;\r\n}\r\n.inbox-widget .inbox-item .inbox-item-img {\r\n  display: block;\r\n  float: left;\r\n  margin-right: 15px;\r\n  width: 40px;\r\n}\r\n.inbox-widget .inbox-item img {\r\n  width: 40px;\r\n}\r\n.inbox-widget .inbox-item .inbox-item-author {\r\n  color: #f5f5f5;\r\n  display: block;\r\n  margin: 0;\r\n}\r\n.inbox-widget .inbox-item .inbox-item-text {\r\n  color: #98a6ad;\r\n  display: block;\r\n  font-size: 12px;\r\n  margin: 0;\r\n}\r\n.inbox-widget .inbox-item .inbox-item-date {\r\n  color: #98a6ad;\r\n  font-size: 11px;\r\n  position: absolute;\r\n  right: 7px;\r\n  top: 2px;\r\n}\r\n/* Chat widget */\r\n.conversation-list {\r\n  list-style: none;\r\n  height: 332px;\r\n  padding: 0px 20px;\r\n}\r\n.conversation-list li {\r\n  margin-bottom: 24px;\r\n}\r\n.conversation-list .chat-avatar {\r\n  display: inline-block;\r\n  float: left;\r\n  text-align: center;\r\n  width: 42px;\r\n}\r\n.conversation-list .chat-avatar img {\r\n  border-radius: 100%;\r\n  width: 100%;\r\n}\r\n.conversation-list .chat-avatar i {\r\n  font-size: 12px;\r\n  font-style: normal;\r\n  color: #98a6ad;\r\n}\r\n.conversation-list .ctext-wrap {\r\n  -moz-border-radius: 3px;\r\n  -webkit-border-radius: 3px;\r\n  background: rgba(255, 255, 255, 0.1);\r\n  border-radius: 3px;\r\n  display: inline-block;\r\n  padding: 12px;\r\n  position: relative;\r\n  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);\r\n}\r\n.conversation-list .ctext-wrap i {\r\n  color: #f5f5f5;\r\n  display: block;\r\n  font-size: 12px;\r\n  font-style: normal;\r\n  font-weight: bold;\r\n  position: relative;\r\n}\r\n.conversation-list .ctext-wrap p {\r\n  margin: 0px;\r\n  padding-top: 3px;\r\n  color: #98a6ad;\r\n}\r\n.conversation-list .ctext-wrap:after {\r\n  right: 100%;\r\n  top: 0%;\r\n  border: solid transparent;\r\n  content: \" \";\r\n  height: 0;\r\n  width: 0;\r\n  position: absolute;\r\n  pointer-events: none;\r\n  border-top-color: rgba(255, 255, 255, 0.1);\r\n  border-width: 8px;\r\n  margin-left: -1px;\r\n  border-right-color: rgba(255, 255, 255, 0.1);\r\n}\r\n.conversation-list .conversation-text {\r\n  display: inline-block;\r\n  float: left;\r\n  font-size: 12px;\r\n  margin-left: 12px;\r\n  width: 70%;\r\n}\r\n.conversation-list .odd .chat-avatar {\r\n  float: right !important;\r\n}\r\n.conversation-list .odd .conversation-text {\r\n  float: right !important;\r\n  margin-right: 12px;\r\n  text-align: right;\r\n  width: 70% !important;\r\n}\r\n.conversation-list .odd .ctext-wrap:after {\r\n  border-color: rgba(238, 238, 242, 0) !important;\r\n  border-left-color: rgba(255, 255, 255, 0.1) !important;\r\n  border-top-color: rgba(255, 255, 255, 0.1) !important;\r\n  left: 100% !important;\r\n  margin-right: -1px;\r\n}\r\n.chat-send {\r\n  padding-left: 0px;\r\n  padding-right: 30px;\r\n}\r\n.chat-send button {\r\n  width: 100%;\r\n}\r\n.chat-inputbar {\r\n  padding-left: 30px;\r\n}\r\n/* Todos widget */\r\n#todo-message {\r\n  font-size: 16px;\r\n}\r\n.todo-list li {\r\n  border-radius: 0px;\r\n  border: 0px;\r\n  margin: 0px;\r\n  padding: 1px;\r\n  color: #98a6ad;\r\n}\r\n.todo-list li:last-of-type {\r\n  border-bottom: none;\r\n}\r\n.todo-list li:hover {\r\n  background: transparent !important;\r\n}\r\n.todo-send {\r\n  padding-left: 0px;\r\n}\r\n/* Widget-chart */\r\n.widget-chart ul li {\r\n  width: 31.5%;\r\n  display: inline-block;\r\n  padding: 0px;\r\n}\r\n.widget-panel {\r\n  padding: 30px 20px;\r\n  padding-left: 30px;\r\n  border-radius: 4px;\r\n  position: relative;\r\n  margin-bottom: 20px;\r\n}\r\n.widget-panel i {\r\n  font-size: 60px;\r\n  padding: 30px;\r\n  background: rgba(255, 255, 255, 0.2);\r\n  position: absolute;\r\n  right: 0px;\r\n  bottom: 0px;\r\n  top: 0px;\r\n  line-height: 60px;\r\n}\r\n.widget-user {\r\n  min-height: 112px;\r\n}\r\n.widget-user img {\r\n  height: 72px;\r\n  float: left;\r\n}\r\n.widget-user .wid-u-info {\r\n  margin-left: 90px;\r\n}\r\n.widget-user .wid-u-info p {\r\n  white-space: nowrap;\r\n  display: block;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n}\r\n.widget-simple-chart .circliful-chart {\r\n  float: left;\r\n  margin-top: -5px;\r\n}\r\n.widget-icon i {\r\n  float: left;\r\n  font-size: 48px;\r\n}\r\n.widget-icon .wid-icon-info {\r\n  margin-left: 80px;\r\n}\r\n"; });
 define('text!resources/styles/minton/css/core.css', ['module'], function(module) { module.exports = "@import url(https://fonts.googleapis.com/css?family=Roboto:400,500,700);\r\n@import url(https://fonts.googleapis.com/css?family=Poppins:500,600);\r\n@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:600,400,700);\r\n/* ===========\r\n   Core file List\r\n\r\n   - Common\r\n   - Bootstrap custom\r\n   - Helper class\r\n   - Waves effect\r\n   - Animation\r\n   - Print css\r\n =============*/\r\n/* ===========\r\n   Common\r\n =============*/\r\nbody {\r\n  background: #2d353d;\r\n  font-family: 'Roboto', sans-serif;\r\n  margin: 0;\r\n  color: #98a6ad;\r\n  overflow-x: hidden !important;\r\n}\r\nhtml {\r\n  overflow-x: hidden;\r\n  position: relative;\r\n  min-height: 100%;\r\n  background: #2d353d;\r\n}\r\nh1,\r\nh2,\r\nh3,\r\nh4,\r\nh5,\r\nh6 {\r\n  color: rgba(255, 255, 255, 0.8);\r\n  font-family: 'Source Sans Pro', sans-serif;\r\n  margin: 10px 0;\r\n}\r\nh1 small,\r\nh2 small,\r\nh3 small,\r\nh4 small,\r\nh5 small,\r\nh6 small {\r\n  color: rgba(255, 255, 255, 0.5);\r\n}\r\nh1 {\r\n  line-height: 43px;\r\n}\r\nh2 {\r\n  line-height: 35px;\r\n}\r\nh3 {\r\n  line-height: 30px;\r\n}\r\nh4 {\r\n  line-height: 22px;\r\n}\r\n* {\r\n  outline: none !important;\r\n}\r\na:hover {\r\n  outline: 0;\r\n  text-decoration: none;\r\n}\r\na:active {\r\n  outline: 0;\r\n  text-decoration: none;\r\n}\r\na:focus {\r\n  outline: 0;\r\n  text-decoration: none;\r\n}\r\n.container {\r\n  width: auto;\r\n}\r\n.container-alt {\r\n  margin-left: auto;\r\n  margin-right: auto;\r\n  padding-left: 15px;\r\n  padding-right: 15px;\r\n}\r\n.footer {\r\n  background-color: #323b44;\r\n  border-top: 1px solid rgba(255, 255, 255, 0.1);\r\n  bottom: 0;\r\n  color: #98a6ad;\r\n  text-align: left !important;\r\n  padding: 20px 30px;\r\n  position: absolute;\r\n  right: 0;\r\n  left: 240px;\r\n}\r\n#wrapper {\r\n  height: 100%;\r\n  overflow: hidden;\r\n  width: 100%;\r\n}\r\n.page {\r\n  bottom: 0;\r\n  left: 0;\r\n  right: 0;\r\n  top: 0;\r\n}\r\n.page-title {\r\n  margin-bottom: 0px;\r\n  margin-top: 0px;\r\n}\r\n.page-header {\r\n  border-bottom: 1px solid rgba(238, 238, 238, 0.2);\r\n}\r\n.page-title-box {\r\n  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.03), 0 1px 0 rgba(0, 0, 0, 0.03);\r\n  padding: 20px;\r\n  margin: -20px -20px 0 -20px;\r\n}\r\n.page-title-box .breadcrumb {\r\n  margin-top: 0px;\r\n  padding-top: 2px;\r\n}\r\n.page-title-box .breadcrumb a {\r\n  color: #3bafda;\r\n}\r\n.page-title-box .breadcrumb > .active {\r\n  color: #98a6ad;\r\n}\r\n.card-box {\r\n  padding: 20px;\r\n  border: 1px solid rgba(255, 255, 255, 0.07);\r\n  border-radius: 5px;\r\n  -moz-border-radius: 5px;\r\n  background-clip: padding-box;\r\n  margin-bottom: 20px;\r\n  background-color: #323b44;\r\n}\r\n.header-title {\r\n  text-transform: uppercase;\r\n  font-size: 15px;\r\n  font-weight: 600;\r\n  letter-spacing: 0.04em;\r\n  line-height: 16px;\r\n  margin-bottom: 8px;\r\n}\r\n.social-links li a {\r\n  -webkit-border-radius: 50%;\r\n  background: #EFF0F4;\r\n  border-radius: 50%;\r\n  color: #7A7676;\r\n  display: inline-block;\r\n  height: 30px;\r\n  line-height: 30px;\r\n  text-align: center;\r\n  width: 30px;\r\n}\r\n/* ===========\r\n   Bootstrap-custom\r\n =============*/\r\n.row {\r\n  margin-right: -10px;\r\n  margin-left: -10px;\r\n}\r\n.col-lg-1,\r\n.col-lg-10,\r\n.col-lg-11,\r\n.col-lg-12,\r\n.col-lg-2,\r\n.col-lg-3,\r\n.col-lg-4,\r\n.col-lg-5,\r\n.col-lg-6,\r\n.col-lg-7,\r\n.col-lg-8,\r\n.col-lg-9,\r\n.col-md-1,\r\n.col-md-10,\r\n.col-md-11,\r\n.col-md-12,\r\n.col-md-2,\r\n.col-md-3,\r\n.col-md-4,\r\n.col-md-5,\r\n.col-md-6,\r\n.col-md-7,\r\n.col-md-8,\r\n.col-md-9,\r\n.col-sm-1,\r\n.col-sm-10,\r\n.col-sm-11,\r\n.col-sm-12,\r\n.col-sm-2,\r\n.col-sm-3,\r\n.col-sm-4,\r\n.col-sm-5,\r\n.col-sm-6,\r\n.col-sm-7,\r\n.col-sm-8,\r\n.col-sm-9,\r\n.col-xs-1,\r\n.col-xs-10,\r\n.col-xs-11,\r\n.col-xs-12,\r\n.col-xs-2,\r\n.col-xs-3,\r\n.col-xs-4,\r\n.col-xs-5,\r\n.col-xs-6,\r\n.col-xs-7,\r\n.col-xs-8,\r\n.col-xs-9 {\r\n  padding-left: 10px;\r\n  padding-right: 10px;\r\n}\r\n.breadcrumb {\r\n  background-color: transparent;\r\n  margin-bottom: 15px;\r\n  margin-top: 5px;\r\n}\r\n.dropdown-menu {\r\n  padding: 4px 0;\r\n  background-color: #1c2127;\r\n  animation: dropdownOpen 0.3s ease-out;\r\n  border: 0;\r\n  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);\r\n}\r\n.dropdown-menu > li > a {\r\n  padding: 6px 20px;\r\n  color: #98a6ad;\r\n}\r\n.dropdown-menu .divider {\r\n  background-color: rgba(238, 238, 238, 0.2);\r\n}\r\n.dropdown-menu > li > a:focus,\r\n.dropdown-menu > li > a:hover {\r\n  color: rgba(255, 255, 255, 0.7);\r\n  text-decoration: none;\r\n  background-color: #121518;\r\n}\r\nhr {\r\n  border-top: 1px solid rgba(238, 238, 238, 0.3);\r\n}\r\ncode {\r\n  color: #3bafda;\r\n  border-radius: 4px;\r\n}\r\ncode,\r\npre {\r\n  background-color: rgba(255, 255, 255, 0.1);\r\n}\r\npre {\r\n  background-color: #21272c;\r\n  color: #eeeeee;\r\n  border: 1px solid rgba(238, 238, 238, 0.3);\r\n}\r\n.bg-empty {\r\n  background: transparent !important;\r\n}\r\n.bg-primary {\r\n  background-color: #3bafda !important;\r\n}\r\n.bg-success {\r\n  background-color: #00b19d !important;\r\n}\r\n.bg-info {\r\n  background-color: #3ddcf7 !important;\r\n}\r\n.bg-warning {\r\n  background-color: #ffaa00 !important;\r\n}\r\n.bg-danger {\r\n  background-color: #ef5350 !important;\r\n}\r\n.bg-muted {\r\n  background-color: #F5F5F5 !important;\r\n}\r\n.bg-inverse {\r\n  background-color: #4c5667 !important;\r\n}\r\n.bg-purple {\r\n  background-color: #7266ba !important;\r\n}\r\n.bg-pink {\r\n  background-color: #f76397 !important;\r\n}\r\n.bg-white {\r\n  background-color: #ffffff !important;\r\n}\r\n.text-white {\r\n  color: #ffffff;\r\n}\r\n.text-danger {\r\n  color: #ef5350;\r\n}\r\n.text-muted {\r\n  color: #98a6ad !important;\r\n}\r\n.text-primary {\r\n  color: #3bafda;\r\n}\r\n.text-warning {\r\n  color: #ffaa00;\r\n}\r\n.text-success {\r\n  color: #00b19d;\r\n}\r\n.text-info {\r\n  color: #3ddcf7;\r\n}\r\n.text-inverse {\r\n  color: rgba(255, 255, 255, 0.6);\r\n}\r\n.text-pink {\r\n  color: #f76397;\r\n}\r\n.text-purple {\r\n  color: #7266ba;\r\n}\r\n.form-control {\r\n  background-color: #323b44;\r\n  border: 2px solid rgba(238, 238, 238, 0.1);\r\n  border-radius: 4px;\r\n  color: #ffffff;\r\n  height: 36px;\r\n  max-width: 100%;\r\n  box-shadow: none;\r\n  transition: all 300ms linear;\r\n}\r\n.form-control:focus {\r\n  background-color: #323b44;\r\n  border: 2px solid rgba(238, 238, 238, 0.3);\r\n  box-shadow: none;\r\n  outline: 0 !important;\r\n  color: #ffffff;\r\n}\r\n.form-control[disabled],\r\n.form-control[readonly],\r\nfieldset[disabled] .form-control {\r\n  background-color: rgba(255, 255, 255, 0.1);\r\n}\r\ninput.form-control::-webkit-input-placeholder {\r\n  color: rgba(255, 255, 255, 0.3);\r\n  font-weight: normal;\r\n}\r\ninput.form-control:-moz-placeholder {\r\n  color: rgba(255, 255, 255, 0.3);\r\n  font-weight: normal;\r\n}\r\ninput.form-control::-moz-placeholder {\r\n  color: rgba(255, 255, 255, 0.3);\r\n  font-weight: normal;\r\n}\r\ninput.form-control:-ms-input-placeholder {\r\n  color: rgba(255, 255, 255, 0.3);\r\n  font-weight: normal;\r\n}\r\n.label {\r\n  color: #ffffff !important;\r\n}\r\n.label-primary {\r\n  background-color: #3bafda;\r\n}\r\n.label-success {\r\n  background-color: #00b19d;\r\n}\r\n.label-info {\r\n  background-color: #3ddcf7;\r\n}\r\n.label-warning {\r\n  background-color: #ffaa00;\r\n}\r\n.label-danger {\r\n  background-color: #ef5350;\r\n}\r\n.label-purple {\r\n  background-color: #7266ba;\r\n}\r\n.label-pink {\r\n  background-color: #f76397;\r\n}\r\n.label-dark {\r\n  background: #4f595b;\r\n}\r\n.label-inverse {\r\n  background-color: #4c5667;\r\n}\r\n.badge {\r\n  font-weight: 600;\r\n  padding: 3px 5px;\r\n  font-size: 12px;\r\n  margin-top: 1px;\r\n}\r\n.badge-xs {\r\n  font-size: 9px;\r\n}\r\n.badge-xs,\r\n.badge-sm {\r\n  transform: translate(0, -2px);\r\n}\r\n.badge-primary {\r\n  background-color: #3bafda;\r\n}\r\n.badge-success {\r\n  background-color: #00b19d;\r\n}\r\n.badge-info {\r\n  background-color: #3ddcf7;\r\n}\r\n.badge-warning {\r\n  background-color: #ffaa00;\r\n}\r\n.badge-danger {\r\n  background-color: #ef5350;\r\n}\r\n.badge-purple {\r\n  background-color: #7266ba;\r\n}\r\n.badge-pink {\r\n  background-color: #f76397;\r\n}\r\n.badge-inverse {\r\n  background-color: #4c5667;\r\n}\r\n/* Pagination/ Pager */\r\n.pagination > li:first-child > a,\r\n.pagination > li:first-child > span {\r\n  border-bottom-left-radius: 3px;\r\n  border-top-left-radius: 3px;\r\n}\r\n.pagination > li:last-child > a,\r\n.pagination > li:last-child > span {\r\n  border-bottom-right-radius: 3px;\r\n  border-top-right-radius: 3px;\r\n}\r\n.pagination > li > a,\r\n.pagination > li > span {\r\n  color: #ffffff;\r\n  background-color: transparent;\r\n  border: 1px solid rgba(255, 255, 255, 0.1);\r\n}\r\n.pagination > li > a:hover,\r\n.pagination > li > span:hover,\r\n.pagination > li > a:focus,\r\n.pagination > li > span:focus {\r\n  background-color: #e4e7ea;\r\n}\r\n.pagination-split li {\r\n  margin-left: 5px;\r\n  display: inline-block;\r\n  float: left;\r\n}\r\n.pagination-split li:first-child {\r\n  margin-left: 0;\r\n}\r\n.pagination-split li a {\r\n  border-radius: 3px;\r\n}\r\n.pagination > .active > a,\r\n.pagination > .active > span,\r\n.pagination > .active > a:hover,\r\n.pagination > .active > span:hover,\r\n.pagination > .active > a:focus,\r\n.pagination > .active > span:focus {\r\n  background-color: #3bafda;\r\n  border-color: #3bafda;\r\n}\r\n.pager li > a,\r\n.pager li > span {\r\n  border-radius: 3px;\r\n  color: #ffffff;\r\n  background: transparent;\r\n}\r\n.pager li > a:hover,\r\n.pager li > span:hover {\r\n  background: rgba(255, 255, 255, 0.2);\r\n}\r\n.pagination > .disabled > a,\r\n.pagination > .disabled > a:focus,\r\n.pagination > .disabled > a:hover,\r\n.pagination > .disabled > span,\r\n.pagination > .disabled > span:focus,\r\n.pagination > .disabled > span:hover,\r\n.pager .disabled > a,\r\n.pager .disabled > a:focus,\r\n.pager .disabled > a:hover,\r\n.pager .disabled > span {\r\n  background: rgba(255, 255, 255, 0.2);\r\n  color: #ffffff;\r\n  border: 1px solid rgba(255, 255, 255, 0.1);\r\n}\r\nblockquote .small,\r\nblockquote footer,\r\nblockquote small {\r\n  color: #ffffff;\r\n}\r\n/* Tabs */\r\n.tabs {\r\n  margin: 0 auto;\r\n  padding: 0px;\r\n  position: relative;\r\n  white-space: nowrap;\r\n  width: 100%;\r\n}\r\n.tabs li.tab {\r\n  display: block;\r\n  float: left;\r\n  margin: 0;\r\n  text-align: center;\r\n}\r\n.tabs li.tab a {\r\n  -moz-transition: color 0.28s ease;\r\n  -ms-transition: color 0.28s ease;\r\n  -o-transition: color 0.28s ease;\r\n  -webkit-transition: color 0.28s ease;\r\n  color: #eeeeee;\r\n  display: block;\r\n  height: 100%;\r\n  text-decoration: none;\r\n  transition: color 0.28s ease;\r\n  width: 100%;\r\n}\r\n.tabs li.tab a.active {\r\n  color: #3bafda !important;\r\n}\r\n.tabs .indicator {\r\n  background-color: #3bafda;\r\n  bottom: 0;\r\n  height: 2px;\r\n  position: absolute;\r\n  will-change: left, right;\r\n}\r\n.tabs-top .indicator {\r\n  top: 0;\r\n}\r\n.nav-pills li a {\r\n  line-height: 36px !important;\r\n}\r\n.nav-pills li.active a {\r\n  background-color: #3bafda !important;\r\n}\r\n.nav-pills li.active a:hover {\r\n  background-color: #3bafda !important;\r\n}\r\n.nav-pills li.active a:focus {\r\n  background-color: #3bafda !important;\r\n}\r\n.nav-pills li a:hover {\r\n  color: #3bafda;\r\n  background: transparent !important;\r\n}\r\n.nav.nav-tabs + .tab-content {\r\n  border: 2px solid rgba(255, 255, 255, 0.1);\r\n  margin-bottom: 30px;\r\n  padding: 30px;\r\n  color: #98a6ad;\r\n  background-color: #323b44;\r\n}\r\n.tabs-vertical-env {\r\n  margin-bottom: 30px;\r\n}\r\n.tabs-vertical-env .tab-content {\r\n  border: 2px solid rgba(255, 255, 255, 0.1);\r\n  display: table-cell;\r\n  margin-bottom: 30px;\r\n  padding: 30px;\r\n  color: #98a6ad;\r\n  vertical-align: top;\r\n  background-color: #272e35;\r\n}\r\n.tabs-vertical-env .nav.tabs-vertical {\r\n  display: table-cell;\r\n  min-width: 120px;\r\n  vertical-align: top;\r\n  width: 150px;\r\n}\r\n.tabs-vertical-env .nav.tabs-vertical li.active > a {\r\n  background-color: #ffffff;\r\n  border: 0;\r\n}\r\n.tabs-vertical-env .nav.tabs-vertical li > a {\r\n  color: #333333;\r\n  text-align: center;\r\n  white-space: nowrap;\r\n}\r\n.nav.nav-tabs > li.active > a {\r\n  border: 0;\r\n}\r\n.nav.nav-tabs > li > a,\r\n.nav.tabs-vertical > li > a {\r\n  background: rgba(255, 255, 255, 0.1) !important;\r\n  border-radius: 0;\r\n  border: none;\r\n  cursor: pointer;\r\n  line-height: 50px;\r\n  padding-left: 20px;\r\n  padding-right: 20px;\r\n  letter-spacing: 0.03em;\r\n  font-weight: 600;\r\n  text-transform: uppercase;\r\n  font-family: 'Source Sans Pro', sans-serif;\r\n}\r\n.nav.nav-tabs > li > a:hover,\r\n.nav.tabs-vertical > li > a:hover {\r\n  color: #3bafda !important;\r\n  background: rgba(255, 255, 255, 0.1) !important;\r\n}\r\n.nav.nav-tabs > li:last-of-type a {\r\n  margin-right: 0px;\r\n}\r\n.nav.nav-tabs {\r\n  border-bottom: 0;\r\n  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);\r\n}\r\n.nav-tabs.nav-justified > .active > a,\r\n.nav-tabs.nav-justified > .active > a:hover,\r\n.nav-tabs.nav-justified > .active > a:focus,\r\n.tabs-vertical-env .nav.tabs-vertical li.active > a {\r\n  border: none;\r\n}\r\n.nav-tabs > li.active > a,\r\n.nav-tabs > li.active > a:focus,\r\n.nav-tabs > li.active > a:hover,\r\n.tabs-vertical > li.active > a,\r\n.tabs-vertical > li.active > a:focus,\r\n.tabs-vertical > li.active > a:hover {\r\n  color: #3bafda !important;\r\n}\r\n.navtab-custom li {\r\n  margin-bottom: -2px;\r\n}\r\n.navtab-custom li a {\r\n  border-top: 2px solid transparent !important;\r\n}\r\n.navtab-custom li.active a {\r\n  border-top: 2px solid #3bafda !important;\r\n}\r\n.nav-tab-left.navtab-custom li a {\r\n  border: none !important;\r\n  border-left: 2px solid transparent !important;\r\n}\r\n.nav-tab-left.navtab-custom li.active a {\r\n  border-left: 2px solid #3bafda !important;\r\n}\r\n.nav-tab-right.navtab-custom li a {\r\n  border: none !important;\r\n  border-right: 2px solid transparent !important;\r\n}\r\n.nav-tab-right.navtab-custom li.active a {\r\n  border-right: 2px solid #3bafda !important;\r\n}\r\n.nav-tabs.nav-justified > .active > a,\r\n.nav-tabs.nav-justified > .active > a:hover,\r\n.nav-tabs.nav-justified > .active > a:focus,\r\n.tabs-vertical-env .nav.tabs-vertical li.active > a {\r\n  border: none;\r\n}\r\n.nav-tabs > li.active > a,\r\n.nav-tabs > li.active > a:focus,\r\n.nav-tabs > li.active > a:hover,\r\n.tabs-vertical > li.active > a,\r\n.tabs-vertical > li.active > a:focus,\r\n.tabs-vertical > li.active > a:hover {\r\n  color: #3bafda !important;\r\n}\r\n/* Dropcap */\r\n.dropcap {\r\n  font-size: 3.1em;\r\n}\r\n.dropcap,\r\n.dropcap-circle,\r\n.dropcap-square {\r\n  display: block;\r\n  float: left;\r\n  font-weight: 400;\r\n  line-height: 36px;\r\n  margin-right: 6px;\r\n  text-shadow: none;\r\n}\r\n/* Modal */\r\n.modal .modal-dialog .modal-content {\r\n  -moz-box-shadow: none;\r\n  -webkit-box-shadow: none;\r\n  border-color: rgba(238, 238, 238, 0.3);\r\n  border-radius: 2px;\r\n  box-shadow: none;\r\n  padding: 30px;\r\n  background-color: #323b44;\r\n}\r\n.modal .modal-dialog .modal-content .modal-header {\r\n  margin: 0;\r\n  padding: 0;\r\n  border-bottom: 2px solid rgba(238, 238, 238, 0.3);\r\n  padding-bottom: 15px;\r\n}\r\n.modal .modal-dialog .modal-content .modal-body {\r\n  padding: 20px 0;\r\n}\r\n.modal .modal-dialog .modal-content .modal-footer {\r\n  padding: 0;\r\n  padding-top: 15px;\r\n  border-top: 1px solid rgba(238, 238, 238, 0.3);\r\n}\r\n.modal .close {\r\n  color: #ffffff;\r\n  text-shadow: none;\r\n}\r\n.modal-full {\r\n  width: 98%;\r\n}\r\n.modal-backdrop {\r\n  background-color: #eeeeee;\r\n}\r\n.modal-content .nav.nav-tabs + .tab-content {\r\n  margin-bottom: 0px;\r\n}\r\n.modal-content .panel-group {\r\n  margin-bottom: 0px;\r\n}\r\n.modal-content .panel {\r\n  border-top: none;\r\n}\r\n/* Custom-modal */\r\n.modal-demo {\r\n  background-color: #FFF;\r\n  width: 600px;\r\n  border-radius: 4px;\r\n  -moz-border-radius: 4px;\r\n  background-clip: padding-box;\r\n  display: none;\r\n}\r\n.modal-demo .close {\r\n  position: absolute;\r\n  top: 15px;\r\n  right: 25px;\r\n  color: #eeeeee;\r\n}\r\n.custom-modal-title {\r\n  padding: 15px 25px 15px 25px;\r\n  line-height: 22px;\r\n  font-size: 18px;\r\n  background-color: #3bafda;\r\n  color: #ffffff;\r\n  text-align: left;\r\n  margin: 0px;\r\n}\r\n.custom-modal-text {\r\n  padding: 20px;\r\n}\r\n.custombox-modal-flash .close,\r\n.custombox-modal-rotatedown .close {\r\n  top: 20px;\r\n  z-index: 9999;\r\n}\r\n.tabs-vertical-env .tab-content {\r\n  margin-bottom: 0px;\r\n}\r\n.table > thead > tr > td.middle-align,\r\n.table > tbody > tr > td.middle-align {\r\n  vertical-align: middle;\r\n}\r\n.legendLabel {\r\n  padding-left: 10px !important;\r\n}\r\n/* Alerts */\r\n.alert-success {\r\n  background-color: rgba(0, 177, 157, 0.25) !important;\r\n  border-color: rgba(0, 177, 157, 0.5) !important;\r\n  color: #00b19d;\r\n}\r\n.alert-success .alert-link {\r\n  color: #00b19d;\r\n}\r\n.alert-info {\r\n  background-color: rgba(61, 220, 247, 0.2) !important;\r\n  border-color: rgba(61, 220, 247, 0.5) !important;\r\n  color: #3ddcf7;\r\n}\r\n.alert-info .alert-link {\r\n  color: #3ddcf7;\r\n}\r\n.alert-warning {\r\n  background-color: rgba(255, 170, 0, 0.2) !important;\r\n  border-color: rgba(255, 170, 0, 0.5) !important;\r\n  color: #ffaa00;\r\n}\r\n.alert-warning .alert-link {\r\n  color: #ffaa00;\r\n}\r\n.alert-danger {\r\n  background-color: rgba(239, 83, 80, 0.2) !important;\r\n  border-color: rgba(239, 83, 80, 0.5) !important;\r\n  color: #ef5350;\r\n}\r\n.alert-danger .alert-link {\r\n  color: #ef5350;\r\n}\r\n/* List group */\r\n.list-group-item {\r\n  border: 1px solid rgba(238, 238, 238, 0.3);\r\n  background: transparent;\r\n  color: #ffffff !important;\r\n}\r\n.list-group-item:hover {\r\n  background-color: rgba(255, 255, 255, 0.07) !important;\r\n}\r\n.list-group-item.disabled,\r\n.list-group-item.disabled:focus,\r\n.list-group-item.disabled:hover {\r\n  background-color: rgba(255, 255, 255, 0.07) !important;\r\n}\r\n.list-group-item.active,\r\n.list-group-item.active:hover,\r\n.list-group-item.active:focus {\r\n  background-color: #3bafda !important;\r\n  border-color: #3bafda;\r\n}\r\n.list-group-item.disabled .list-group-item-text,\r\n.list-group-item.disabled:focus .list-group-item-text,\r\n.list-group-item.disabled:hover .list-group-item-text {\r\n  color: rgba(255, 255, 255, 0.5);\r\n}\r\na.list-group-item .list-group-item-heading,\r\nbutton.list-group-item .list-group-item-heading {\r\n  color: #ffffff;\r\n}\r\n.nav-pills > .active > a > .badge {\r\n  color: #3bafda;\r\n}\r\n.has-success .form-control {\r\n  border-color: #00b19d;\r\n  box-shadow: none !important;\r\n}\r\n.has-warning .form-control {\r\n  border-color: #ffaa00;\r\n  box-shadow: none !important;\r\n}\r\n.has-error .form-control {\r\n  border-color: #ef5350;\r\n  box-shadow: none !important;\r\n}\r\n.input-group-addon {\r\n  border-radius: 2px;\r\n  border: none;\r\n  background-color: rgba(255, 255, 255, 0.2);\r\n  color: #ffffff;\r\n}\r\n/* Tooltips */\r\n.tooltip-inner {\r\n  border-radius: 1px;\r\n  padding: 6px 10px;\r\n}\r\n.jqstooltip {\r\n  box-sizing: content-box;\r\n  width: auto !important;\r\n  height: auto !important;\r\n}\r\n/* Popover */\r\n.popover {\r\n  font-family: inherit;\r\n  border: none;\r\n  border-radius: 3px;\r\n  -moz-border-radius: 3px;\r\n  background-clip: padding-box;\r\n}\r\n.popover .popover-title {\r\n  background-color: transparent;\r\n  color: #3bafda;\r\n  font-weight: 600;\r\n}\r\n/* ===========\r\n   Helper classes\r\n =============*/\r\n.p-0 {\r\n  padding: 0px !important;\r\n}\r\n.p-t-0 {\r\n  padding-top: 0px !important;\r\n}\r\n.p-t-10 {\r\n  padding-top: 10px !important;\r\n}\r\n.p-b-0 {\r\n  padding-bottom: 0px !important;\r\n}\r\n.p-b-10 {\r\n  padding-bottom: 10px !important;\r\n}\r\n.m-0 {\r\n  margin: 0px !important;\r\n}\r\n.m-r-5 {\r\n  margin-right: 5px;\r\n}\r\n.m-r-10 {\r\n  margin-right: 10px;\r\n}\r\n.m-r-15 {\r\n  margin-right: 15px !important;\r\n}\r\n.m-l-5 {\r\n  margin-left: 5px;\r\n}\r\n.m-l-10 {\r\n  margin-left: 10px;\r\n}\r\n.m-l-15 {\r\n  margin-left: 15px;\r\n}\r\n.m-t-5 {\r\n  margin-top: 5px !important;\r\n}\r\n.m-t-0 {\r\n  margin-top: 0px;\r\n}\r\n.m-t-10 {\r\n  margin-top: 10px !important;\r\n}\r\n.m-t-15 {\r\n  margin-top: 15px !important;\r\n}\r\n.m-t-20 {\r\n  margin-top: 20px !important;\r\n}\r\n.m-t-30 {\r\n  margin-top: 30px !important;\r\n}\r\n.m-t-40 {\r\n  margin-top: 40px !important;\r\n}\r\n.m-b-0 {\r\n  margin-bottom: 0px !important;\r\n}\r\n.m-b-5 {\r\n  margin-bottom: 5px;\r\n}\r\n.m-b-10 {\r\n  margin-bottom: 10px;\r\n}\r\n.m-b-15 {\r\n  margin-bottom: 15px;\r\n}\r\n.m-b-20 {\r\n  margin-bottom: 20px;\r\n}\r\n.m-b-25 {\r\n  margin-bottom: 25px;\r\n}\r\n.m-b-30 {\r\n  margin-bottom: 30px !important;\r\n}\r\n.w-xs {\r\n  min-width: 80px;\r\n}\r\n.w-sm {\r\n  min-width: 95px;\r\n}\r\n.w-md {\r\n  min-width: 110px;\r\n}\r\n.w-lg {\r\n  min-width: 140px;\r\n}\r\n.m-h-50 {\r\n  min-height: 50px;\r\n}\r\n.l-h-34 {\r\n  line-height: 34px !important;\r\n}\r\n.font-light {\r\n  font-weight: 300;\r\n}\r\n.font-500 {\r\n  font-weight: 500;\r\n}\r\n.font-normal {\r\n  font-weight: normal;\r\n}\r\n.font-13 {\r\n  font-size: 13px;\r\n}\r\n.wrapper-md {\r\n  padding: 20px;\r\n}\r\n.center-page {\r\n  float: none !important;\r\n  margin: 0 auto;\r\n}\r\n.pull-in {\r\n  margin-left: -20px;\r\n  margin-right: -20px;\r\n}\r\n.b-0 {\r\n  border: none !important;\r\n}\r\n.no-border {\r\n  border: none;\r\n}\r\n.bx-s-0 {\r\n  box-shadow: none !important;\r\n}\r\n.bx-shadow {\r\n  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.1);\r\n}\r\n.mx-box {\r\n  max-height: 380px;\r\n  min-height: 380px;\r\n}\r\n.thumb-sm {\r\n  height: 32px;\r\n  width: 32px;\r\n}\r\n.thumb-md {\r\n  height: 48px;\r\n  width: 48px;\r\n}\r\n.thumb-lg {\r\n  height: 88px;\r\n  width: 88px;\r\n}\r\n/* Demo Only */\r\n.grid-structure .grid-container {\r\n  background-color: rgba(255, 255, 255, 0.03);\r\n  margin-bottom: 10px;\r\n  padding: 10px 20px;\r\n}\r\n.icon-list-demo div {\r\n  cursor: pointer;\r\n  line-height: 45px;\r\n  white-space: nowrap;\r\n  color: #98a6ad;\r\n}\r\n.icon-list-demo div p {\r\n  margin-bottom: 0px;\r\n  line-height: inherit;\r\n}\r\n.icon-list-demo i {\r\n  -webkit-transition: all 0.2s;\r\n  display: inline-block;\r\n  font-size: 18px;\r\n  margin: 0;\r\n  text-align: center;\r\n  transition: all 0.2s;\r\n  vertical-align: middle;\r\n  width: 40px;\r\n}\r\n.icon-list-demo .col-md-4 {\r\n  border-radius: 3px;\r\n  -moz-border-radius: 3px;\r\n  background-clip: padding-box;\r\n}\r\n.icon-list-demo .col-md-4:hover {\r\n  color: #3bafda;\r\n}\r\n.icon-list-demo .col-md-4:hover i {\r\n  -o-transform: scale(1.5);\r\n  -webkit-transform: scale(1.5);\r\n  moz-transform: scale(1.5);\r\n  transform: scale(1.5);\r\n}\r\n.ionicon-list i {\r\n  font-size: 16px;\r\n}\r\n.ionicon-list .col-md-3:hover i {\r\n  -o-transform: scale(2);\r\n  -webkit-transform: scale(2);\r\n  moz-transform: scale(2);\r\n  transform: scale(2);\r\n}\r\n.button-list {\r\n  margin-left: -8px;\r\n  margin-bottom: -12px;\r\n}\r\n.button-list .btn {\r\n  margin-bottom: 12px;\r\n  margin-left: 8px;\r\n}\r\n/* ===========\r\n   Waves Effect\r\n =============*/\r\n/*!\r\n * Waves v0.6.0\r\n * http://fian.my.id/Waves\r\n *\r\n * Copyright 2014 Alfiana E. Sibuea and other contributors\r\n * Released under the MIT license\r\n * https://github.com/fians/Waves/blob/master/LICENSE\r\n */\r\n.waves-effect {\r\n  position: relative;\r\n  cursor: pointer;\r\n  display: inline-block;\r\n  overflow: hidden;\r\n  -webkit-user-select: none;\r\n  -moz-user-select: none;\r\n  -ms-user-select: none;\r\n  user-select: none;\r\n  -webkit-tap-highlight-color: transparent;\r\n  vertical-align: middle;\r\n  z-index: 1;\r\n  will-change: opacity, transform;\r\n  transition: all 0.3s ease-out;\r\n}\r\n.waves-effect .waves-ripple {\r\n  position: absolute;\r\n  border-radius: 50%;\r\n  width: 20px;\r\n  height: 20px;\r\n  margin-top: -10px;\r\n  margin-left: -10px;\r\n  opacity: 0;\r\n  background: rgba(0, 0, 0, 0.2);\r\n  transition: all 0.7s ease-out;\r\n  transition-property: transform, opacity;\r\n  transform: scale(0);\r\n  pointer-events: none;\r\n}\r\n.waves-effect.waves-light .waves-ripple {\r\n  background-color: rgba(255, 255, 255, 0.45);\r\n}\r\n.waves-effect.waves-red .waves-ripple {\r\n  background-color: rgba(244, 67, 54, 0.7);\r\n}\r\n.waves-effect.waves-yellow .waves-ripple {\r\n  background-color: rgba(255, 235, 59, 0.7);\r\n}\r\n.waves-effect.waves-orange .waves-ripple {\r\n  background-color: rgba(255, 152, 0, 0.7);\r\n}\r\n.waves-effect.waves-purple .waves-ripple {\r\n  background-color: rgba(156, 39, 176, 0.7);\r\n}\r\n.waves-effect.waves-green .waves-ripple {\r\n  background-color: rgba(76, 175, 80, 0.7);\r\n}\r\n.waves-effect.waves-teal .waves-ripple {\r\n  background-color: rgba(0, 150, 136, 0.7);\r\n}\r\n.waves-effect.waves-primary .waves-ripple {\r\n  background-color: rgba(59, 175, 218, 0.4);\r\n}\r\n.waves-notransition {\r\n  transition: none !important;\r\n}\r\n.waves-circle {\r\n  transform: translateZ(0);\r\n  text-align: center;\r\n  width: 2.5em;\r\n  height: 2.5em;\r\n  line-height: 2.5em;\r\n  border-radius: 50%;\r\n  -webkit-mask-image: none;\r\n}\r\n.waves-input-wrapper {\r\n  border-radius: 0.2em;\r\n  vertical-align: bottom;\r\n}\r\n.waves-input-wrapper .waves-button-input {\r\n  position: relative;\r\n  top: 0;\r\n  left: 0;\r\n  z-index: 1;\r\n}\r\n.waves-block {\r\n  display: block;\r\n}\r\n/* ===========\r\n  Animation\r\n =============*/\r\n/* Bounce 1 */\r\n@keyframes cd-bounce-1 {\r\n  0% {\r\n    opacity: 0;\r\n    transform: scale(0.5);\r\n  }\r\n  60% {\r\n    opacity: 1;\r\n    transform: scale(1.2);\r\n  }\r\n  100% {\r\n    opacity: 1;\r\n    transform: scale(1);\r\n  }\r\n}\r\n/* Bounce 2 */\r\n@keyframes cd-bounce-2 {\r\n  0% {\r\n    opacity: 0;\r\n    transform: translateX(-100px);\r\n  }\r\n  60% {\r\n    opacity: 1;\r\n    transform: translateX(20px);\r\n  }\r\n  100% {\r\n    opacity: 1;\r\n    transform: translateX(0);\r\n  }\r\n}\r\n/* Dropdown */\r\n@keyframes dropdownOpen {\r\n  0% {\r\n    opacity: 0;\r\n    transform: scale(0);\r\n  }\r\n  100% {\r\n    opacity: 1;\r\n    transform: scale(1);\r\n  }\r\n}\r\n/* Progressbar Animated */\r\n@keyframes animationProgress {\r\n  from {\r\n    width: 0;\r\n  }\r\n}\r\n/* Portlets loader */\r\n@keyframes loaderAnimate {\r\n  0% {\r\n    transform: rotate(0deg);\r\n  }\r\n  100% {\r\n    transform: rotate(220deg);\r\n  }\r\n}\r\n@keyframes loaderAnimate2 {\r\n  0% {\r\n    box-shadow: inset #555 0 0 0 8px;\r\n    transform: rotate(-140deg);\r\n  }\r\n  50% {\r\n    box-shadow: inset #555 0 0 0 2px;\r\n  }\r\n  100% {\r\n    box-shadow: inset #555 0 0 0 8px;\r\n    transform: rotate(140deg);\r\n  }\r\n}\r\n@keyframes loaderAnimate2 {\r\n  0% {\r\n    box-shadow: inset #999 0 0 0 17px;\r\n    transform: rotate(-140deg);\r\n  }\r\n  50% {\r\n    box-shadow: inset #999 0 0 0 2px;\r\n  }\r\n  100% {\r\n    box-shadow: inset #999 0 0 0 17px;\r\n    transform: rotate(140deg);\r\n  }\r\n}\r\n/* =============\r\n   Print css\r\n============= */\r\n@media print {\r\n  .logo,\r\n  .breadcrumb,\r\n  .page-title,\r\n  .footer,\r\n  .topbar-left {\r\n    display: none;\r\n    margin: 0px;\r\n    padding: 0px;\r\n  }\r\n  .left,\r\n  .right-bar {\r\n    display: none;\r\n  }\r\n  .content {\r\n    margin-top: 0px !important;\r\n    padding-top: 0px;\r\n  }\r\n  .content-page {\r\n    margin-left: 0px !important;\r\n    margin-top: 0px;\r\n  }\r\n}\r\n"; });
 define('text!resources/styles/minton/css/elements.css', ['module'], function(module) { module.exports = ""; });

@@ -1,0 +1,19 @@
+<template>
+  <require from="./top-bar.css"></require>
+  <div class="topbar-main top-bar-color">
+    <div class="container">
+      <div class="logo nav navbar-nav">
+        <ul class="nav navbar-nav">
+          <li><a href="#"><span>${title}</span></a></li>
+        </ul>
+      </div>
+      <div if.bind="loggedIn">
+        <ul class="nav navbar-nav navbar-right pull-right">
+          <li><a href="/#/settings"><i class="fa fa-cog" css="${currentRoute === 'settings' ? 'color:black;' : ''}"></i></a></li>
+          <li><a href="/#/user/:id"><span class="fa fa-user" css="${currentRoute.includes('user/') ? 'color:black;' : ''}"></span></a></li>
+          <li><a href="#"><span class="glyphicon glyphicon-log-out" title="Logout" click.trigger="logout()"></span></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>  
+</template>
