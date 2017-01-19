@@ -15,11 +15,11 @@ export class RestService {
     if(!headers){
       headers = {}
     }
-    headers['content-type'] = 'application/json; charset=utf-8';
+    headers['Content-Type'] = 'application/json; charset=utf-8';
     let response = await this.http.fetch(urlQuery, {
       method: 'post',
       headers: headers ? headers : {},
-      body: body ? body : {}
+      body: body ? JSON.stringify(body) : JSON.stringify({empty: true})
     });
     this.responseDiagnostic();
     let content = {};

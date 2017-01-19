@@ -254,11 +254,11 @@ define('resources/services/restService',["require", "exports", "aurelia-dependen
                             if (!headers) {
                                 headers = {};
                             }
-                            headers['content-type'] = 'application/json; charset=utf-8';
+                            headers['Content-Type'] = 'application/json; charset=utf-8';
                             return [4 /*yield*/, this.http.fetch(urlQuery, {
                                     method: 'post',
                                     headers: headers ? headers : {},
-                                    body: body ? body : {}
+                                    body: body ? JSON.stringify(body) : JSON.stringify({ empty: true })
                                 })];
                         case 1:
                             response = _a.sent();
