@@ -11,8 +11,6 @@ export function configure(config: FrameworkConfiguration) {
     'resources/styles/minton/css/menu.css',
     'resources/styles/minton/css/pages.css',
     'resources/styles/minton/css/responsive.css',
-    'resources/styles/minton/css/variables.css',
-    'resources/valueConverters/keysValueConverter',
-    'resources/valueConverters/valuesValueConverter'
+    'resources/styles/minton/css/variables.css'
   ]);
 }

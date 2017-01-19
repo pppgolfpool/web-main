@@ -3,40 +3,57 @@ import { bindable } from 'aurelia-framework';
 export class PoolTableCustomElement {
 
   constructor() {
-    this.id = this.generateRandomeId();
   }
 
-  private id: string;
+  @bindable tableId: string;
+  @bindable config: Object;
   @bindable data: Array<Object>;
 
   attached() {
     window.setTimeout(() => {
-      (<any>$(`#${this.id}`)).dataTable({
-        paging: false,
-        info: false
-      });
+      console.log(this.tableId);
+      (<any>$(`#${this.tableId}`)).dataTable(this.config);
       (<any>$('input')).addClass("form-control input-sm");
-    }, 1000);
+    }, 2000);
   }
-
-
-  generateRandomeId() : string {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-      var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-      return v.toString(16);
-    });
-  }
-
 }
+
+export class PoolTableConfig {
+  Paging: boolean;
+  Info: boolean;
+  Order: Array<PoolTableOrderDef>;
+  ColumnDefs: Array<PoolTableColumnDef>
+}
+
+export class PoolTableColumnDef {
+  Type: PoolTableAtomicType;
+}
+
+export class PoolTableOrderDef {
+  ColumnNumber: number;
+  OrderBy: PoolTableOrderDef;
+}
+
+export type PoolTableAtomicType =
+  'num' | 'string';
+
+export type PoolTableOrderType =
+  'asc' | 'desc';
 
 export class TableKeysValueConverter {
   toView(value) {
+    if(!value){
+      return [''];
+    }
     return Object.keys(value);
   }
 }
 
 export class TableValuesValueConverter {
   toView(obj) {
+    if(!obj){
+      return [''];
+    }
     let temp = [];
     for (let prop in obj) {
       temp.push(obj[prop]);

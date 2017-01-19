@@ -7,7 +7,7 @@ import { EventAggregator } from 'aurelia-event-aggregator';
 import { Container } from 'aurelia-dependency-injection';
 import { AuthClient } from './microservices/auth/authClient';
 import { EventService } from './resources/services/eventService';
-import { RouterService } from './main/shell/routerService';
+import { RouterService } from './shell/routerService';
 import { Router, RouterConfiguration } from 'aurelia-router';
 
 //Configure Bluebird Promises.
@@ -23,8 +23,14 @@ export function configure(aurelia: Aurelia) {
     .standardConfiguration()
     .feature('resources')
     .feature('microservices/auth')
-    .feature('main/shell')
-    .feature('pooltables');
+    .feature('shell')
+    .feature('pooltables')
+    .feature('microservices/stats/current')
+    .feature('microservices/stats/history')
+    .feature('microservices/stats/majors')
+    .feature('microservices/stats/monthly')
+    .feature('microservices/stats/playoffs')
+    .feature('microservices/stats/season');
 
   if (environment.debug) {
     LogManager.addAppender(new ConsoleAppender());

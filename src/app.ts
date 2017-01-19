@@ -1,6 +1,6 @@
 import { inject } from 'aurelia-dependency-injection';
 import { EventService } from './resources/services/eventService';
-import { RouterService } from './main/shell/routerService';
+import { RouterService } from './shell/routerService';
 import { Router } from 'aurelia-router';
 
 @inject(EventService, Router, RouterService)
@@ -11,12 +11,12 @@ export class App {
     this.routerService = routerService;
     this.data = [
       {
-        dataOne: 1,
-        dataTwo: 2,
+        colOne: 1,
+        colTwo: 2,
       },
       {
-        dataOne: 3,
-        dataTwo: 4,
+        colThree: 3,
+        colFour: 4
       }
     ]
   }
@@ -27,18 +27,26 @@ export class App {
   data: any;
 
   async activate() {
-    
-    window.setInterval(() => {
-      this.data =  [
-      {
-        dataOne: 5,
-        dataTwo: 6,
-      },
-      {
-        dataOne: 7,
-        dataTwo: 8,
-      }
-    ];
-    }, 5000)
     await this.router.configure(this.routerService.configure);  }
 }
+
+
+
+
+
+
+/*
+
+    this.data = [
+      {
+        colOne: 1,
+        colTwo: 2,
+      },
+      {
+        colThree: 3,
+        colFour: 4
+      }
+    ]
+
+
+*/

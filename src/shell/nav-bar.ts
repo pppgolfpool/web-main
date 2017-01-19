@@ -1,6 +1,6 @@
 import { inject } from 'aurelia-framework';
-import { EventService } from '../../resources/services/eventService';
-import { AuthService } from '../../resources/services/authService';
+import { EventService } from '../resources/services/eventService';
+import { AuthService } from '../resources/services/authService';
 
 @inject(EventService, AuthService)
 export class NavBarCustomElement {

@@ -2,7 +2,7 @@ import { inject } from "aurelia-framework";
 import { Router } from "aurelia-router";
 import { RouterConfiguration } from "aurelia-router";
 import { EventAggregator } from 'aurelia-event-aggregator';
-import { EventService } from '../../resources/services/eventService';
+import { EventService } from '../resources/services/eventService';
 
 @inject(Router, EventAggregator, EventService)
 export class RouterService {

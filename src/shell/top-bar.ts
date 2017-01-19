@@ -1,7 +1,7 @@
 import { inject } from "aurelia-framework";
 import { bindable, bindingMode } from 'aurelia-framework';
-import { EventService } from '../../resources/services/eventService';
-import { AuthService, WebToken } from '../../resources/services/authService';
+import { EventService } from '../resources/services/eventService';
+import { AuthService, WebToken } from '../resources/services/authService';
 
 @inject(AuthService, EventService)
 export class TopBarCustomElement {
