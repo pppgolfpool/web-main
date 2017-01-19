@@ -1,0 +1,22 @@
+<template>
+  <div class="navbar-custom">
+    <div class="container">
+      <div class="navigation">
+        <ul class="navigation-menu">
+          <li class="has-submenu ${currentRoute == 'statistics' ? 'active' : ''}">
+            <a href="#"><i class="glyphicon glyphicon-stats" style="font-size: 15px"></i>Statistics</a>
+          </li>
+          <li class="has-submenu ${currentRoute == 'picks' ? 'active' : ''}">
+            <a href="/#/picks"><i class="fa fa-heart"></i>Picks</a>
+          </li>
+          <li class="has-submenu ${currentRoute == 'feedback' ? 'active' : ''}">
+            <a href="/#/feedback"><i class="fa fa-comments"></i>Feedback</a>
+          </li>
+          <li if.bind="isAdmin" class="has-submenu ${currentRoute == 'admin' ? 'active' : ''}">
+            <a href="/#/admin"><i class="fa fa-cog fa-spin"></i>Admin</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</template>

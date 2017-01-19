@@ -1,10 +1,12 @@
 <template>
   <require from="./top-bar"></require>
+  <require from="./nav-bar"></require>
   <header id="topnav">
-    <top-bar></top-bar>    
+    <top-bar></top-bar>
+    <nav-bar if.bind="loggedIn"></nav-bar>
   </header>
   <div class="wrapper container">
-    <!--<router-view if.bind="loggedIn"></router-view>-->
-    <login></login>
+    <router-view if.bind="loggedIn"></router-view>
+    <login if.bind="!loggedIn"></login>
   </div>
 </template>

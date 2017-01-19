@@ -1,30 +1,44 @@
 import { inject } from 'aurelia-dependency-injection';
-import { HttpClient } from 'aurelia-fetch-client';
 import { EventService } from './resources/services/eventService';
+import { RouterService } from './main/shell/routerService';
+import { Router } from 'aurelia-router';
 
-@inject(HttpClient, EventService)
+@inject(EventService, Router, RouterService)
 export class App {
-  constructor(http: HttpClient, eventService: EventService) {
-    this.http = http;
+  constructor(eventService: EventService, router: Router, routerService: RouterService) {
     this.eventService = eventService;
-    eventService.subscribe('response', (data) => {
-
-    });
+    this.router = router;
+    this.routerService = routerService;
+    this.data = [
+      {
+        dataOne: 1,
+        dataTwo: 2,
+      },
+      {
+        dataOne: 3,
+        dataTwo: 4,
+      }
+    ]
   }
 
-  http: HttpClient;
   eventService: EventService;
+  routerService: RouterService;
+  router: Router;
+  data: any;
 
   async activate() {
-    let response = await this.http.fetch("https://jsonplaceholder.typicode.com/posts/1")
-    window.setTimeout(() => {
-      console.log($('#main'));
-      (<any>$('#main')).dataTable({
-        paging: false,
-        info: false
-      });
-      (<any>$('input')).addClass("form-control input-sm");
-    }, 2000);
-  }
-  message = 'Hello World!';
+    
+    window.setInterval(() => {
+      this.data =  [
+      {
+        dataOne: 5,
+        dataTwo: 6,
+      },
+      {
+        dataOne: 7,
+        dataTwo: 8,
+      }
+    ];
+    }, 5000)
+    await this.router.configure(this.routerService.configure);  }
 }

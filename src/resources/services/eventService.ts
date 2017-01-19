@@ -23,4 +23,6 @@ export type EventType =
   'logout' |
   'request' |
   'response' |
-  'routed';
+  'routed' |
+  'notAdmin' |
+  'adminDetected';

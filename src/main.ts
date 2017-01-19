@@ -5,6 +5,10 @@ import { ConsoleAppender } from "aurelia-logging-console";
 import { HttpClient } from 'aurelia-fetch-client';
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { Container } from 'aurelia-dependency-injection';
+import { AuthClient } from './microservices/auth/authClient';
+import { EventService } from './resources/services/eventService';
+import { RouterService } from './main/shell/routerService';
+import { Router, RouterConfiguration } from 'aurelia-router';
 
 //Configure Bluebird Promises.
 (<any>Promise).config({
@@ -19,7 +23,8 @@ export function configure(aurelia: Aurelia) {
     .standardConfiguration()
     .feature('resources')
     .feature('microservices/auth')
-    .feature('main/shell');
+    .feature('main/shell')
+    .feature('pooltables');
 
   if (environment.debug) {
     LogManager.addAppender(new ConsoleAppender());
@@ -58,5 +63,7 @@ export function configure(aurelia: Aurelia) {
       });
   });
 
+  let authClient = aurelia.container.get(AuthClient);
+  
   aurelia.start().then(() => aurelia.setRoot());
 }

@@ -43,6 +43,7 @@ export class AuthService {
   }
 
   setAdminRequestCallback(adminRequestCallback: (authToken: string) => Promise<boolean>) {
+    log.debug("setting admin request callback");
     this.adminRequestCallback = adminRequestCallback;
   }
 
@@ -53,7 +54,12 @@ export class AuthService {
     log.debug(`Requesting admin authorization`);
     let authToken = this.getWebToken().authToken;
     var isAdmin = await this.adminRequestCallback(authToken);
-    log.debug(`Admin authorizatio: ${isAdmin}`);
+    log.debug(`Admin authorization: ${isAdmin}`);
+    if(isAdmin){
+      this.eventService.publish('adminDetected');
+    } else {
+      this.eventService.publish('notAdmin');
+    }
     return isAdmin;
   }
 }

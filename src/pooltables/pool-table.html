@@ -1,0 +1,15 @@
+<template>
+  <require from="./datatablestyles.css"></require>
+  <table id="${id}" class="table">
+  <thead>
+    <tr>
+      <th repeat.for="header of data[0] | tableKeys">${header}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr repeat.for="row of data">
+      <td repeat.for="item of row | tableValues">${item}</td>
+    </tr>
+  </tbody>
+  </table>
+</template>

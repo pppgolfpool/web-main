@@ -21,6 +21,7 @@ export class TopBarCustomElement {
     this.eventService.subscribe('logout', () => {
       this.loggedIn = false;
     });
+    this.loggedIn = this.authService.isLoggedIn();
   }
 
   private readonly authService: AuthService;

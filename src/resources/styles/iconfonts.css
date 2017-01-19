@@ -33,3 +33,15 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+@font-face {
+  font-family: 'Material Design Iconic Font Edit';
+  src: url('src/resources/styles/minton/fonts/Material-Design-Iconic-Font.eot?v=1.0.1');
+  src: url('src/resources/styles/minton/fonts/Material-Design-Iconic-Font.eot?#iefix&v=1.0.1') format('embedded-opentype'), url('src/resources/styles/minton/fonts/Material-Design-Iconic-Font.ttf?v=1.0.1') format('truetype'), url('src/resources/styles/minton/fonts/Material-Design-Iconic-Font.svg?v=1.0.1#Material-Design-Iconic-Font') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.md {
+  font: normal normal normal 14px/1 'Material Design Iconic Font Edit' !important;
+}
