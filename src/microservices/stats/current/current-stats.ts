@@ -5,8 +5,6 @@ import { StatsClient } from '../statsClient';
 export class CurrentStatsCustomElement {
   constructor(sc: StatsClient) {
     this.statsClient = sc;
-    this.golfersConfig = this.getGolfersConfig();
-    this.pooliesConfig = this.getPooliesConfig();
   }
 
   private readonly statsClient: StatsClient;
@@ -20,15 +18,15 @@ export class CurrentStatsCustomElement {
 
   async attached() {
     await this.getData();
-      window.setTimeout(() =>{
-        (<any>$('#pooliestable')).dataTable(this.getPooliesConfig());
-        (<any>$('#golferstable')).dataTable(this.getGolfersConfig());
-        (<any>$('input')).addClass("form-control input-sm");    
-      }, 1000);
+    window.setTimeout(() => {
+      (<any>$('#pooliestable')).dataTable(this.getPooliesConfig());
+      (<any>$('#golferstable')).dataTable(this.getGolfersConfig());
+      (<any>$('input')).addClass("form-control input-sm");
+    }, 1000);
 
   }
 
-  async getData(){
+  async getData() {
     this.tournament = await this.statsClient.getTournamentStats();
     this.course = this.tournament["Course"];
     this.poolies = <Array<any>>this.tournament["Poolies"];
@@ -37,10 +35,10 @@ export class CurrentStatsCustomElement {
     this.golfers.forEach(golfer => {
       points.push(golfer.Points);
     });
-    this.maxPoints = Math.max.apply(null,points);
+    this.maxPoints = Math.max.apply(null, points);
   }
 
-  getPooliesConfig(){
+  getPooliesConfig() {
     return {
       columnDefs: [
         { type: "num" },
@@ -51,7 +49,7 @@ export class CurrentStatsCustomElement {
       order: [[1, 'asc']],
       paging: false,
       info: false
-    };    
+    };
   }
 
   getGolfersConfig() {

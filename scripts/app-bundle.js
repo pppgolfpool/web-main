@@ -1088,6 +1088,25 @@ define('microservices/stats/statsClient',["require", "exports", "aurelia-depende
                 });
             });
         };
+        StatsClient.prototype.getSeasonStats = function (season, tour) {
+            if (season === void 0) { season = 'current'; }
+            if (tour === void 0) { tour = 'PGA TOUR'; }
+            return __awaiter(this, void 0, void 0, function () {
+                var response;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, this.restService.post(this.serviceUrl + "/api/getSeason", {
+                                season: season, tour: tour
+                            }, {
+                                Authorization: "Bearer " + this.authService.getWebToken().authToken
+                            })];
+                        case 1:
+                            response = _a.sent();
+                            return [2 /*return*/, response.Data];
+                    }
+                });
+            });
+        };
         return StatsClient;
     }());
     StatsClient = __decorate([
@@ -1170,8 +1189,6 @@ define('microservices/stats/current/current-stats',["require", "exports", "aurel
             this.golfers = [];
             this.poolies = [];
             this.statsClient = sc;
-            this.golfersConfig = this.getGolfersConfig();
-            this.pooliesConfig = this.getPooliesConfig();
         }
         CurrentStatsCustomElement.prototype.attached = function () {
             return __awaiter(this, void 0, void 0, function () {
@@ -1351,13 +1368,152 @@ define('microservices/stats/season/index',["require", "exports"], function (requ
     exports.configure = configure;
 });
 
-define('microservices/stats/season/season-stats',["require", "exports"], function (require, exports) {
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t;
+    return { next: verb(0), "throw": verb(1), "return": verb(2) };
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+define('microservices/stats/season/season-stats',["require", "exports", "aurelia-framework", "../statsClient"], function (require, exports, aurelia_framework_1, statsClient_1) {
     "use strict";
     var SeasonStatsCustomElement = (function () {
-        function SeasonStatsCustomElement() {
+        function SeasonStatsCustomElement(sc) {
+            this.statsClient = sc;
         }
+        SeasonStatsCustomElement.prototype.attached = function () {
+            return __awaiter(this, void 0, void 0, function () {
+                var _this = this;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, this.getData()];
+                        case 1:
+                            _a.sent();
+                            window.setTimeout(function () {
+                                $('#seasontable').dataTable(_this.getTableConfig());
+                                $('input').addClass("form-control input-sm");
+                            }, 1000);
+                            return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        SeasonStatsCustomElement.prototype.getData = function () {
+            return __awaiter(this, void 0, void 0, function () {
+                var data;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0: return [4 /*yield*/, this.statsClient.getSeasonStats()];
+                        case 1:
+                            data = _a.sent();
+                            this.week = data["Week"];
+                            this.season = data["Season"];
+                            this.poolies = data["Poolies"];
+                            this.getMaxValues();
+                            return [2 /*return*/];
+                    }
+                });
+            });
+        };
+        SeasonStatsCustomElement.prototype.getTableConfig = function () {
+            return {
+                columnDefs: [
+                    { type: "num" },
+                    { type: "num" },
+                    { type: "string" },
+                    { type: "num" },
+                    { type: "num" },
+                    { type: "num" },
+                    { type: "num" },
+                    { type: "num" },
+                    { type: "num" },
+                    { type: "num" }
+                ],
+                order: [[0, 'asc']],
+                paging: false,
+                info: false
+            };
+        };
+        SeasonStatsCustomElement.prototype.getMaxValues = function () {
+            var array = [];
+            this.poolies.forEach(function (poolie) {
+                if (poolie["Wins"]) {
+                    array.push(poolie["Wins"]);
+                }
+            });
+            this.maxWins = Math.max.apply(null, array);
+            array = [];
+            this.poolies.forEach(function (poolie) {
+                if (poolie["Top5"]) {
+                    array.push(poolie["Top5"]);
+                }
+            });
+            this.maxTop5 = Math.max.apply(null, array);
+            array = [];
+            this.poolies.forEach(function (poolie) {
+                if (poolie["Top10"]) {
+                    array.push(poolie["Top10"]);
+                }
+            });
+            this.maxTop10 = Math.max.apply(null, array);
+            array = [];
+            this.poolies.forEach(function (poolie) {
+                if (poolie["Cuts"]) {
+                    array.push(poolie["Cuts"]);
+                }
+            });
+            this.maxCuts = Math.max.apply(null, array);
+            array = [];
+            this.poolies.forEach(function (poolie) {
+                if (poolie["PlusMinus"]) {
+                    array.push(poolie["PlusMinus"]);
+                }
+            });
+            this.maxPlusMinus = Math.max.apply(null, array);
+        };
         return SeasonStatsCustomElement;
     }());
+    SeasonStatsCustomElement = __decorate([
+        aurelia_framework_1.inject(statsClient_1.StatsClient),
+        __metadata("design:paramtypes", [statsClient_1.StatsClient])
+    ], SeasonStatsCustomElement);
     exports.SeasonStatsCustomElement = SeasonStatsCustomElement;
 });
 
@@ -1389,9 +1545,11 @@ define('text!microservices/stats/history/history-stats.html', ['module'], functi
 define('text!microservices/stats/majors/majors-stats.html', ['module'], function(module) { module.exports = "<template>\r\n  majors\r\n</template>"; });
 define('text!microservices/stats/monthly/monthly-stats.html', ['module'], function(module) { module.exports = "<template>\r\n  monthly\r\n</template>"; });
 define('text!microservices/stats/playoffs/playoff-stats.html', ['module'], function(module) { module.exports = "<template>\r\n  playoff\r\n</template>"; });
-define('text!microservices/stats/season/season-stats.html', ['module'], function(module) { module.exports = "<template>\r\n  season\r\n</template>"; });
+define('text!microservices/stats/season/season-stats.html', ['module'], function(module) { module.exports = "<template>\r\n  <require from=\"./season-stats-styles.css\"></require>\r\n  <h2><span style=\"margin-right: 20px\">${season} Season Stats</span><small>as of week ${week}</small></h2>\r\n  <div class=\"col-lg-12\">\r\n    <div class=\"card-box\">\r\n      <table id=\"seasontable\" class=\"table\">\r\n        <thead>\r\n          <tr>\r\n            <th>Rank</th>\r\n            <th>Change</th>\r\n            <th>Poolie</th>\r\n            <th>Points</th>\r\n            <th>Behind</th>\r\n            <th>Wins</th>\r\n            <th>Top 5s</th>\r\n            <th>Top 10s</th>\r\n            <th>Cuts</th>\r\n            <th>+/-</th>\r\n          </tr>\r\n        </thead>\r\n        <tbody>\r\n          <tr repeat.for=\"poolie of poolies\">\r\n            <td>${poolie.Rank}</td>\r\n            <td class=\"${poolie.Change > 0 ? 'table-green' : (poolie.Change < 0 ? 'table-red' : '')}\">${poolie.Change}</td>\r\n            <td>${poolie.LastFirst}</td>\r\n            <td>${poolie.Points}</td>\r\n            <td>${poolie.Behind}</td>\r\n            <td class=\"${poolie.Wins === maxWins ? 'table-green' : ''}\">${poolie.Wins}</td>\r\n            <td class=\"${poolie.Top5 === maxTop5 ? 'table-green' : ''}\">${poolie.Top5}</td>\r\n            <td class=\"${poolie.Top10 === maxTop10 ? 'table-green' : ''}\">${poolie.Top10}</td>\r\n            <td class=\"${poolie.Cuts === maxCuts ? 'table-red' : ''}\">${poolie.Cuts}</td>\r\n            <td class=\"${poolie.PlusMinus === maxPlusMinus ? 'table-green' : ''}\">${poolie.PlusMinus}</td>\r\n          </tr>\r\n        </tbody>\r\n      </table>\r\n    </div>\r\n  </div>\r\n</template>"; });
 define('text!resources/styles/datatablestyles.css', ['module'], function(module) { module.exports = "div.dataTables_length label {\r\n\tfont-weight: normal;\r\n\ttext-align: left;\r\n\twhite-space: nowrap;\r\n}\r\n\r\ndiv.dataTables_length select {\r\n\twidth: 75px;\r\n\tdisplay: inline-block;\r\n}\r\n\r\ndiv.dataTables_filter {\r\n\ttext-align: right;\r\n}\r\n\r\ndiv.dataTables_filter label {\r\n\tfont-weight: normal;\r\n\twhite-space: nowrap;\r\n\ttext-align: left;\r\n}\r\n\r\ndiv.dataTables_filter input {\r\n\tmargin-left: 0.5em;\r\n\tdisplay: inline-block;\r\n}\r\n\r\ndiv.dataTables_info {\r\n\tpadding-top: 8px;\r\n\twhite-space: nowrap;\r\n}\r\n\r\ndiv.dataTables_paginate {\r\n\tmargin: 0;\r\n\twhite-space: nowrap;\r\n\ttext-align: right;\r\n}\r\n\r\ndiv.dataTables_paginate ul.pagination {\r\n\tmargin: 2px 0;\r\n\twhite-space: nowrap;\r\n}\r\n\r\n@media screen and (max-width: 767px) {\r\n\tdiv.dataTables_length,\r\n\tdiv.dataTables_filter,\r\n\tdiv.dataTables_info,\r\n\tdiv.dataTables_paginate {\r\n\t\ttext-align: center;\r\n\t}\r\n}\r\n\r\n\r\ntable.dataTable td,\r\ntable.dataTable th {\r\n\tbox-sizing: content-box;\r\n}\r\n\r\n\r\ntable.dataTable {\r\n\tclear: both;\r\n\tmargin-top: 6px !important;\r\n\tmargin-bottom: 6px !important;\r\n\tmax-width: none !important;\r\n}\r\n\r\ntable.dataTable thead .sorting,\r\ntable.dataTable thead .sorting_asc,\r\ntable.dataTable thead .sorting_desc,\r\ntable.dataTable thead .sorting_asc_disabled,\r\ntable.dataTable thead .sorting_desc_disabled {\r\n\tcursor: pointer;\r\n\tposition: relative;\r\n}\r\n\r\ntable.dataTable thead .sorting:after,\r\ntable.dataTable thead .sorting_asc:after,\r\ntable.dataTable thead .sorting_desc:after {\r\n\tposition: absolute;\r\n\ttop: 8px;\r\n\tright: 8px;\r\n\tdisplay: block;\r\n\tfont-family: 'Glyphicons Halflings Edit';\r\n\topacity: 0.5;\r\n}\r\ntable.dataTable thead .sorting:after {\r\n\topacity: 0.2;\r\n\tcontent: \"\\e150\"; /* sort */\r\n}\r\ntable.dataTable thead .sorting_asc:after {\r\n\tcontent: \"\\e155\"; /* sort-by-attributes */\r\n}\r\ntable.dataTable thead .sorting_desc:after {\r\n\tcontent: \"\\e156\"; /* sort-by-attributes-alt */\r\n}\r\n\r\ntable.dataTable thead .sorting_asc_disabled:after,\r\ntable.dataTable thead .sorting_desc_disabled:after {\r\n\tcolor: #eee;\r\n}\r\n\r\ntable.dataTable thead > tr > th {\r\n\tpadding-left: 8px;\r\n\tpadding-right: 30px;\r\n}\r\n\r\ntable.dataTable th:active {\r\n\toutline: none;\r\n}\r\n\r\n/* Scrolling */\r\ndiv.dataTables_scrollHead table {\r\n\tmargin-bottom: 0 !important;\r\n\tborder-bottom-left-radius: 0;\r\n\tborder-bottom-right-radius: 0;\r\n}\r\n\r\ndiv.dataTables_scrollHead table thead tr:last-child th:first-child,\r\ndiv.dataTables_scrollHead table thead tr:last-child td:first-child {\r\n\tborder-bottom-left-radius: 0 !important;\r\n\tborder-bottom-right-radius: 0 !important;\r\n}\r\n\r\ndiv.dataTables_scrollBody table {\r\n\tborder-top: none;\r\n\tmargin-top: 0 !important;\r\n\tmargin-bottom: 0 !important;\r\n}\r\n\r\ndiv.dataTables_scrollBody tbody tr:first-child th,\r\ndiv.dataTables_scrollBody tbody tr:first-child td {\r\n\tborder-top: none;\r\n}\r\n\r\ndiv.dataTables_scrollFoot table {\r\n\tmargin-top: 0 !important;\r\n\tborder-top: none;\r\n}\r\n\r\n/* Frustratingly the border-collapse:collapse used by Bootstrap makes the column\r\n   width calculations when using scrolling impossible to align columns. We have\r\n   to use separate\r\n */\r\ntable.table-bordered.dataTable {\r\n\tborder-collapse: separate !important;\r\n}\r\ntable.table-bordered thead th,\r\ntable.table-bordered thead td {\r\n\tborder-left-width: 0;\r\n\tborder-top-width: 0;\r\n}\r\ntable.table-bordered tbody th,\r\ntable.table-bordered tbody td {\r\n\tborder-left-width: 0;\r\n\tborder-bottom-width: 0;\r\n}\r\ntable.table-bordered th:last-child,\r\ntable.table-bordered td:last-child {\r\n\tborder-right-width: 0;\r\n}\r\ndiv.dataTables_scrollHead table.table-bordered {\r\n\tborder-bottom-width: 0;\r\n}\r\n\r\n\r\n\r\n\r\n/*\r\n * TableTools styles\r\n */\r\n.table.dataTable tbody tr.active td,\r\n.table.dataTable tbody tr.active th {\r\n\tbackground-color: #08C;\r\n\tcolor: white;\r\n}\r\n\r\n.table.dataTable tbody tr.active:hover td,\r\n.table.dataTable tbody tr.active:hover th {\r\n\tbackground-color: #0075b0 !important;\r\n}\r\n\r\n.table.dataTable tbody tr.active th > a,\r\n.table.dataTable tbody tr.active td > a {\r\n\tcolor: white;\r\n}\r\n\r\n.table-striped.dataTable tbody tr.active:nth-child(odd) td,\r\n.table-striped.dataTable tbody tr.active:nth-child(odd) th {\r\n\tbackground-color: #017ebc;\r\n}\r\n\r\ntable.DTTT_selectable tbody tr {\r\n\tcursor: pointer;\r\n}\r\n\r\ndiv.DTTT .btn:hover {\r\n\ttext-decoration: none !important;\r\n}\r\n\r\nul.DTTT_dropdown.dropdown-menu {\r\n  z-index: 2003;\r\n}\r\n\r\nul.DTTT_dropdown.dropdown-menu a {\r\n\tcolor: #333 !important; /* needed only when demo_page.css is included */\r\n}\r\n\r\nul.DTTT_dropdown.dropdown-menu li {\r\n\tposition: relative;\r\n}\r\n\r\nul.DTTT_dropdown.dropdown-menu li:hover a {\r\n\tbackground-color: #0088cc;\r\n\tcolor: white !important;\r\n}\r\n\r\ndiv.DTTT_collection_background {\r\n\tz-index: 2002;\t\r\n}\r\n\r\n/* TableTools information display */\r\ndiv.DTTT_print_info {\r\n\tposition: fixed;\r\n\ttop: 50%;\r\n\tleft: 50%;\r\n\twidth: 400px;\r\n\theight: 150px;\r\n\tmargin-left: -200px;\r\n\tmargin-top: -75px;\r\n\ttext-align: center;\r\n\tcolor: #333;\r\n\tpadding: 10px 30px;\r\n\topacity: 0.95;\r\n\r\n\tbackground-color: white;\r\n\tborder: 1px solid rgba(0, 0, 0, 0.2);\r\n\tborder-radius: 6px;\r\n\tbox-shadow: 0 3px 7px rgba(0, 0, 0, 0.5);\r\n}\r\n\r\ndiv.DTTT_print_info h6 {\r\n\tfont-weight: normal;\r\n\tfont-size: 28px;\r\n\tline-height: 28px;\r\n\tmargin: 1em;\r\n}\r\n\r\ndiv.DTTT_print_info p {\r\n\tfont-size: 14px;\r\n\tline-height: 20px;\r\n}\r\n\r\ndiv.dataTables_processing {\r\n    position: absolute;\r\n    top: 50%;\r\n    left: 50%;\r\n    width: 100%;\r\n    height: 60px;\r\n    margin-left: -50%;\r\n    margin-top: -25px;\r\n    padding-top: 20px;\r\n    padding-bottom: 20px;\r\n    text-align: center;\r\n    font-size: 1.2em;\r\n    background-color: white;\r\n    background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 25%, rgba(255,255,255,0.9) 75%, rgba(255,255,255,0) 100%);\r\n}\r\n\r\n\r\n\r\n/*\r\n * FixedColumns styles\r\n */\r\ndiv.DTFC_LeftHeadWrapper table,\r\ndiv.DTFC_LeftFootWrapper table,\r\ndiv.DTFC_RightHeadWrapper table,\r\ndiv.DTFC_RightFootWrapper table,\r\ntable.DTFC_Cloned tr.even {\r\n    background-color: white;\r\n    margin-bottom: 0;\r\n}\r\n \r\ndiv.DTFC_RightHeadWrapper table ,\r\ndiv.DTFC_LeftHeadWrapper table {\r\n\tborder-bottom: none !important;\r\n    margin-bottom: 0 !important;\r\n    border-top-right-radius: 0 !important;\r\n    border-bottom-left-radius: 0 !important;\r\n    border-bottom-right-radius: 0 !important;\r\n}\r\n \r\ndiv.DTFC_RightHeadWrapper table thead tr:last-child th:first-child,\r\ndiv.DTFC_RightHeadWrapper table thead tr:last-child td:first-child,\r\ndiv.DTFC_LeftHeadWrapper table thead tr:last-child th:first-child,\r\ndiv.DTFC_LeftHeadWrapper table thead tr:last-child td:first-child {\r\n    border-bottom-left-radius: 0 !important;\r\n    border-bottom-right-radius: 0 !important;\r\n}\r\n \r\ndiv.DTFC_RightBodyWrapper table,\r\ndiv.DTFC_LeftBodyWrapper table {\r\n    border-top: none;\r\n    margin: 0 !important;\r\n}\r\n \r\ndiv.DTFC_RightBodyWrapper tbody tr:first-child th,\r\ndiv.DTFC_RightBodyWrapper tbody tr:first-child td,\r\ndiv.DTFC_LeftBodyWrapper tbody tr:first-child th,\r\ndiv.DTFC_LeftBodyWrapper tbody tr:first-child td {\r\n    border-top: none;\r\n}\r\n \r\ndiv.DTFC_RightFootWrapper table,\r\ndiv.DTFC_LeftFootWrapper table {\r\n    border-top: none;\r\n    margin-top: 0 !important;\r\n}\r\n\r\n\r\n/*\r\n * FixedHeader styles\r\n */\r\ndiv.FixedHeader_Cloned table {\r\n\tmargin: 0 !important\r\n}\r\n"; });
 define('text!microservices/stats/current/current-poolies-styles.css', ['module'], function(module) { module.exports = ""; });
 define('text!microservices/stats/current/current-stats-styles.css', ['module'], function(module) { module.exports = ".table-green {\r\n  color: #00bb00;\r\n}\r\n\r\n.table-red {\r\n  color: #cc0000;\r\n}\r\n\r\n.table-grey {\r\n  color: #aaaaaa;\r\n}\r\n\r\n.form-control {\r\n  \r\n  width: 75%;\r\n\ttransition: none;\r\n}"; });
 define('text!microservices/stats/current/current-golfers-table.html', ['module'], function(module) { module.exports = "<template bindable=\"golfers, maxPoints\">\r\n  <require from=\"./current-stats-styles.css\"></require>\r\n  <table id=\"golferstable\" class=\"table\">\r\n    <thead>\r\n      <tr>\r\n        <th>Golfer</th>\r\n        <th>Pick Count</th>\r\n        <th>Position</th>\r\n        <th>Par</th>\r\n        <th>Thru</th>\r\n        <th>Points</th>\r\n      </tr>\r\n    </thead>\r\n    <tbody>\r\n      <tr repeat.for=\"golfer of golfers\">\r\n        <td><a href=\"http://www.pgatour.com/players/player.${golfer.Id}.html\" target=\"_blank\">${golfer.Name}</a></td>\r\n        <td>${golfer.PickCount}</td>\r\n        <td class=\"${golfer.Status === 'cut' ? 'table-red' : '' }\">${golfer.Status === 'active' ? golfer.Rank : 'cut'}</td>\r\n        <td>${golfer.ParTotal}</td>\r\n        <td>${golfer.Thru}</td>\r\n        <td class=\"${golfer.Points === maxPoints ? 'table-green' : ''}\">${golfer.Points}</td>\r\n      </tr>\r\n    </tbody>\r\n  </table>\r\n</template>"; });
+define('text!microservices/stats/season/current-stats-styles.css', ['module'], function(module) { module.exports = ".table-green {\r\n  color: #00bb00;\r\n}\r\n\r\n.table-red {\r\n  color: #cc0000;\r\n}\r\n\r\n.table-grey {\r\n  color: #aaaaaa;\r\n}\r\n\r\n.form-control {\r\n  \r\n  width: 75%;\r\n\ttransition: none;\r\n}"; });
+define('text!microservices/stats/season/season-stats-styles.css', ['module'], function(module) { module.exports = ".table-green {\r\n  color: #00bb00;\r\n}\r\n\r\n.table-red {\r\n  color: #cc0000;\r\n}\r\n\r\n.table-grey {\r\n  color: #aaaaaa;\r\n}\r\n\r\n.form-control {\r\n  \r\n  width: 75%;\r\n\ttransition: none;\r\n}"; });
 //# sourceMappingURL=app-bundle.js.map

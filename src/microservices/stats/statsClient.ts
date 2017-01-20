@@ -27,4 +27,15 @@ export class StatsClient {
     });    
     return response.Data;
   }
+
+  async getSeasonStats(
+    season: string = 'current',
+    tour: string = 'PGA TOUR'): Promise<Object>{
+      let response = await this.restService.post(`${this.serviceUrl}/api/getSeason`, {
+        season, tour
+      }, {
+        Authorization: `Bearer ${this.authService.getWebToken().authToken}`
+      });
+      return response.Data;
+    }
 }
