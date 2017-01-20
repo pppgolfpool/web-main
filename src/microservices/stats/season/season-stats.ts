@@ -11,6 +11,7 @@ export class SeasonStatsCustomElement {
   private poolies: Array<Object>;
   private season: number;
   private week: number;
+  private tournamentName: string;
 
   private maxWins: number;
   private maxTop5: number;
@@ -30,6 +31,7 @@ export class SeasonStatsCustomElement {
     let data = await this.statsClient.getSeasonStats();
     this.week = <number>data["Week"];
     this.season = <number>data["Season"];
+    this.tournamentName = <string>data["Tournament"]
     this.poolies = <Array<Object>>data["Poolies"];
     this.getMaxValues();
   }
