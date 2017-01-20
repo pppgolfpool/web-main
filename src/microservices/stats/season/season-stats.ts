@@ -32,6 +32,7 @@ export class SeasonStatsCustomElement {
     this.week = <number>data["Week"];
     this.season = <number>data["Season"];
     this.tournamentName = <string>data["Tournament"]
+    this.tournamentName = this.tournamentName.toLowerCase().startsWith("the ") ? this.tournamentName : `The ${this.tournamentName}`;
     this.poolies = <Array<Object>>data["Poolies"];
     this.getMaxValues();
   }
