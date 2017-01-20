@@ -1,0 +1,8 @@
+<template bindable="course">
+  <div class="card-box">
+    <h4 class="header-title"><span>${course.Name}</span></h4>
+    <p>Designed by ${course.Designer}</p>
+    <p>Established ${course.Established}</p>
+    <p>${course.City}${course.City ? "," : ""} ${course.State}${course.State ? "," : ""} ${course.Country}${course.Country ? "," : ""}</p>
+  </div>
+</template>

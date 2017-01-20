@@ -40,6 +40,7 @@ export class AuthService {
     this.cookieService.setCookie("authToken", "", 1);
     window.location.replace("#");
     this.eventService.publish('logout');
+    window.location.reload(true);
   }
 
   setAdminRequestCallback(adminRequestCallback: (authToken: string) => Promise<boolean>) {

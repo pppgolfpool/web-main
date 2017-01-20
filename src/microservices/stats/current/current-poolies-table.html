@@ -1,0 +1,21 @@
+<template bindable="poolies, state">
+  <require from="./current-stats-styles.css"></require>
+  <table id="pooliestable" class="table">
+    <thead>
+      <tr>
+        <th>Start Rank</th>
+        <th>${state === 'progressing' ? 'Proj. Rank' : 'Curr. Rank'}</th>
+        <th>Poolie</th>
+        <th>Golfer</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr repeat.for="poolie of poolies">
+        <td>${poolie.Rank}</td>
+        <td class="${poolie.ProjectedRank < poolie.Rank ? 'table-green' : (poolie.ProjectedRank > poolie.Rank ? 'table-red' : '')}">${poolie.ProjectedRank}</td>
+        <td>${poolie.LastFirst}</td>
+        <td>${poolie.GolferName}</td>
+      </tr>
+    </tbody>
+  </table>
+</template>

@@ -1,8 +1,26 @@
 <template>
-  <div class="col-sm-6">
-    <pool-table table-id="pooliesCurrent" data.bind="pooliesData" config.bind="pooliesConfig"></pool-table>
+  <require from="./current-tournament.html"></require>
+  <require from="./current-course.html"></require>
+  <require from="./current-poolies-table.html"></require>
+  <require from="./current-golfers-table.html"></require>
+  <div class="row" if.bind="tournament">
+    <div class="col-sm-5">
+      <current-tournament tournament.bind="tournament"></current-tournament>
+    </div>
+    <div class="col-sm-5">
+      <current-course course.bind="course"></current-course>
+    </div>
   </div>
-  <div class="col-sm-6">
-    <pool-table table-id="golfersCurrent" data.bind="golfersData" config.bind="golfersConfig"></pool-table>
-  </div>  
+  <div class="row" if.bind="tournament">
+    <div class="col-lg-6">
+      <div class="card-box">
+        <current-poolies-table poolies.bind="poolies" state.bind="tournament.State"></current-poolies-table>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card-box">
+        <current-golfers-table golfers.bind="golfers" max-points.bind="maxPoints"></current-poolies-table>
+      </div>
+    </div>
+  </div>
 </template>

@@ -1,0 +1,25 @@
+<template bindable="golfers, maxPoints">
+  <require from="./current-stats-styles.css"></require>
+  <table id="golferstable" class="table">
+    <thead>
+      <tr>
+        <th>Golfer</th>
+        <th>Pick Count</th>
+        <th>Position</th>
+        <th>Par</th>
+        <th>Thru</th>
+        <th>Points</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr repeat.for="golfer of golfers">
+        <td><a href="http://www.pgatour.com/players/player.${golfer.Id}.html" target="_blank">${golfer.Name}</a></td>
+        <td>${golfer.PickCount}</td>
+        <td class="${golfer.Status === 'cut' ? 'table-red' : '' }">${golfer.Status === 'active' ? golfer.Rank : 'cut'}</td>
+        <td>${golfer.ParTotal}</td>
+        <td>${golfer.Thru}</td>
+        <td class="${golfer.Points === maxPoints ? 'table-green' : ''}">${golfer.Points}</td>
+      </tr>
+    </tbody>
+  </table>
+</template>

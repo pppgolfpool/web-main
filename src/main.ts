@@ -24,7 +24,6 @@ export function configure(aurelia: Aurelia) {
     .feature('resources')
     .feature('microservices/auth')
     .feature('shell')
-    .feature('pooltables')
     .feature('microservices/stats/current')
     .feature('microservices/stats/history')
     .feature('microservices/stats/majors')

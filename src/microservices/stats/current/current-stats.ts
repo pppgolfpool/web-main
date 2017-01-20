@@ -10,50 +10,34 @@ export class CurrentStatsCustomElement {
   }
 
   private readonly statsClient: StatsClient;
-  private golfersData: Array<any> = [];
-  private pooliesData: Array<any> = [];
+  private tournament: Object = null;
+  private course: Object = {};
+  private golfers: Array<any> = [];
+  private poolies: Array<any> = [];
   private golfersConfig: Object;
   private pooliesConfig: Object;
+  private maxPoints: number;
 
   async attached() {
     await this.getData();
+      window.setTimeout(() =>{
+        (<any>$('#pooliestable')).dataTable(this.getPooliesConfig());
+        (<any>$('#golferstable')).dataTable(this.getGolfersConfig());
+        (<any>$('input')).addClass("form-control input-sm");    
+      }, 1000);
+
   }
 
   async getData(){
-    let tournament = await this.statsClient.getTournamentStats();
-    this.pooliesData = this.getPooliesFromData(tournament);
-    this.golfersData = this.getGolfersFromData(tournament);
-    console.log(this.golfersData);
-  }
-
-  getPooliesFromData(tournament: Object): Array<any>{
-    let poolies = <Array<any>>tournament["Poolies"];
-    let select : Array<any> = [];
-    poolies.forEach((element,index) => {
-      select.push({
-        "Start Rank": element.Rank,
-        "Curr. Rank": element.ProjectedRank,
-         Poolie: element.LastFirst,
-         Golfer: element.GolferName,
-      })
+    this.tournament = await this.statsClient.getTournamentStats();
+    this.course = this.tournament["Course"];
+    this.poolies = <Array<any>>this.tournament["Poolies"];
+    this.golfers = <Array<any>>this.tournament["Golfers"];
+    let points = [];
+    this.golfers.forEach(golfer => {
+      points.push(golfer.Points);
     });
-    return select;
-  }
-
-  getGolfersFromData(tournament: Object): Array<any>{
-    let golfers = <Array<any>>tournament["Golfers"];
-    let select : Array<any> = [];
-    golfers.forEach((element,index) => {
-      select.push({
-        Name: element.Name,
-        "Pick Count": element.PickCount,
-         Position: element.Rank,
-         Par: element.ParTotal,
-         Thru: element.Thru,
-         Points: element.Points
-      })
-    });
-    return select;
+    this.maxPoints = Math.max.apply(null,points);
   }
 
   getPooliesConfig(){
@@ -80,7 +64,7 @@ export class CurrentStatsCustomElement {
         { type: "num" },
         { type: "num" }
       ],
-      order: [[2, 'desc']],
+      order: [[1, 'desc']],
       paging: false,
       info: false
     };

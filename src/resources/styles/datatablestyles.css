@@ -331,11 +331,3 @@ div.DTFC_LeftFootWrapper table {
 div.FixedHeader_Cloned table {
 	margin: 0 !important
 }
-
-/*
- * Added for golf pool.
- */
-.form-control {
-  width: 75%;
-	transition: none;
-}

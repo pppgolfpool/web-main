@@ -4,6 +4,7 @@ export function configure(config: FrameworkConfiguration) {
   config.globalResources([
     'bootstrap/css/bootstrap.css',
     'resources/styles/iconfonts.css',
+    'resources/styles/datatablestyles.css',
     'resources/styles/minton/css/components.css',
     'resources/styles/minton/css/core.css',
     'resources/styles/minton/css/elements.css',
@@ -11,6 +12,7 @@ export function configure(config: FrameworkConfiguration) {
     'resources/styles/minton/css/menu.css',
     'resources/styles/minton/css/pages.css',
     'resources/styles/minton/css/responsive.css',
-    'resources/styles/minton/css/variables.css'
+    'resources/styles/minton/css/variables.css',
+    'resources/valueConverters/dateFormat',
   ]);
 }
