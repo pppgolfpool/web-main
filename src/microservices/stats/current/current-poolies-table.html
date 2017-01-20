@@ -12,7 +12,7 @@
     <tbody>
       <tr repeat.for="poolie of poolies">
         <td>${poolie.Rank}</td>
-        <td class="${poolie.ProjectedRank < poolie.Rank ? 'table-green' : (poolie.ProjectedRank > poolie.Rank ? 'table-red' : '')}"><b>${poolie.ProjectedRank}</b></td>
+        <td class="${poolie.ProjectedRank < poolie.Rank ? 'table-green' : (poolie.ProjectedRank > poolie.Rank ? 'table-red' : '')}">${poolie.ProjectedRank}</td>
         <td>${poolie.LastFirst}</td>
         <td>${poolie.GolferName}</td>
       </tr>
