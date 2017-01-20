@@ -38,4 +38,16 @@ export class StatsClient {
       });
       return response.Data;
     }
+
+  async getMonthlyStats(
+    season: string = 'current',
+    tour: string = 'PGA TOUR',
+    key: string = 'user'): Promise<Object>{
+      let response = await this.restService.post(`${this.serviceUrl}/api/getMonthly`, {
+        season, tour, key
+      }, {
+        Authorization: `Bearer ${this.authService.getWebToken().authToken}`
+      });
+      return response.Data;
+    }    
 }

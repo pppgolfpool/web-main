@@ -1,3 +1,21 @@
 <template>
-  monthly
+  <div class="col-lg-12">
+    <h2><span style="margin-right: 20px">FedEx Cup Points per Month</span><small>as of ${getMonthName(currentMonth)}</small></h2>
+    <div class="card-box">
+      <table id="monthtable" class="table">
+        <thead>
+          <tr>
+            <th>Poolie</th>
+            <th repeat.for="monthName of monthNames">${monthName}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr repeat.for="poolie of poolies">
+            <td>${poolie.LastFirst}</td>
+            <td repeat.for="points of poolie.Points">${points}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </template>
