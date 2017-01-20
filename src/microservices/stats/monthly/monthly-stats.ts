@@ -46,7 +46,7 @@ export class MonthlyStatsCustomElement {
 
     return {
       columnDefs: columnDefs,
-      order: [[1, 'desc']],
+      order: [[this.currentMonth, 'desc']],
       paging: false,
       info: false
     };
