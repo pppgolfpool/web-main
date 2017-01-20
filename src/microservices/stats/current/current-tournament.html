@@ -1,7 +1,7 @@
 <template bindable="tournament">
   <div class="card-box">
     <h4 class="pull-right">Round ${tournament.CurrentRound}/${tournament.TotalRounds}</h4>
-    <h4 class="header-title"><span class="text-info">${tournament.Name}</span><a target="_blank" href="${tournament.Link}" class="m-l-10">(pgatour.com)</a></h4>
+    <h4 class="header-title"><span class="text-info">${tournament.Name}</span><a target="_blank" href="${tournament.Link}" class="m-l-10">(pga.com)</a></h4>
     <h4 if.bind="tournament.State === 'progressing'" class="text-warning"><b>This tournament is in progress</b></h4>
     <h4 if.bind="tournament.State === 'completed'" class="text-success"><b>This tournament is Complete</b></h4>
     <p>${tournament.Start | dateFormat} to ${tournament.End | dateFormat}</p>
