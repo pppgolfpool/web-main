@@ -26,12 +26,14 @@ export class MonthlyStatsCustomElement {
     this.currentMonth = (<Array<number>>this.poolies[0]["Points"]).length;
     this.monthNames = [];
     for(var i = 0; i < this.currentMonth; i++){
-      this.monthNames.push(this.getMonthNameLiteral(i + 1));
+      this.monthNames.push(this.getMonthName(i + 1));
     }
   }
 
   getMonthName(month: number): string {
-    let date = new Date(`2000-${month}-01`);
+    let strMonth = month > 9 ? `${month}` : `0${month}`;
+    console.log(strMonth);
+    let date = new Date(`${strMonth}/02/2000`);
     let locale = 'en-us';
     return date.toLocaleString(locale, { month: "long" });
   }
