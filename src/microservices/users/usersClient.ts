@@ -23,7 +23,7 @@ export class UsersClient {
   }
 
   // key/value can be userId, name, or email. 'all' ignores value.
-  async getProfile(key: string = 'all', value: string): Promise<Object> {
+  async getProfile(key: string = 'all', value: string): Promise<any> {
     let response = await this.restService.post(`${this.serviceUrl}/api/getProfile`, {
       key: key, value: value
     }, {

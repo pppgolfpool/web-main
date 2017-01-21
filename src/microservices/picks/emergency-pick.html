@@ -1,0 +1,41 @@
+<template>
+    <div class="col-8-lg">
+        <div class="card-box">
+            <h4 class="text-dark header-title" if.bind="tournament">Emergency Pick for ${tournament.Name}</h4>
+            <form>
+                <div class="form-group">
+                    <label for="email">User's Full Name</label>
+                    <select id="email" class="form-control" value.bind="selectedProfile">
+                <option model.bind="null">Choose a User by Name...</option>
+                <option repeat.for="profile of profiles"
+                        model.bind="profile">
+                    ${profile.LastFirst}
+                </option>
+            </select>
+                </div>
+                <div class="form-group">
+                    <label for="golferselect">Golfer</label>
+                    <select id="golferselect" class="form-control" value.bind="selectedGolfer">
+                <option model.bind="null">Choose a Golfer...</option>
+                <option repeat.for="golfer of golfers"
+                        model.bind="golfer">
+                    ${golfer.PlayerName}
+                </option>
+            </select>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <button class="btn btn-primary" disabled.bind="!selectedProfile || !selectedGolfer" click.trigger="submit()">Make pick</button>
+                    </div>
+                    <!--<div class="col-sm-1" style="margin-right: 20px">
+                        <button class="btn btn-default pull-right" click.trigger="loadProfiles()">Load Users</button>
+                    </div>-->
+                    <div class="col-sm-1">
+                        <button class="btn btn-default pull-right" click.trigger="loadGolfers()">Load Golfers</button>
+                    </div>
+                </div>
+                <p style="color: red">${errorMessage}</p>
+            </form>
+        </div>
+    </div>
+</template>

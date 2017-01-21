@@ -15,10 +15,10 @@ export class PickClient {
   private readonly restService: RestService;
   private readonly authService: AuthService;
 
-  async getCurrentPickInfo(): Promise<Object> {
-    let response = await this.restService.post(`${this.serviceUrl}/api/getGolfers`, null, {
-        Authorization: `Bearer ${this.authService.getWebToken().authToken}`
-      });
+  async getCurrentPickInfo(userId: string = null): Promise<Object> {
+    let response = await this.restService.post(`${this.serviceUrl}/api/getGolfers`, userId ? { userId: userId } : null, {
+      Authorization: `Bearer ${this.authService.getWebToken().authToken}`
+    });
     return response.Data;
   }
 
@@ -31,12 +31,32 @@ export class PickClient {
     return response.Data;
   }
 
-  async pickGolfer(playerId: string, playerName: string){
+  async pickGolfer(playerId: string, playerName: string) {
     let response = await this.restService.post(`${this.serviceUrl}/api/pickGolfer`, {
       tour: 'PGA TOUR', playerId: playerId, playerName: playerName
     }, {
         Authorization: `Bearer ${this.authService.getWebToken().authToken}`
       });
-    return response.Data;    
+    return response.Data;
+  }
+
+  async emergencyPick(playerId: string, playerName: string, email: string, userId: string) {
+    let response = await this.restService.post(`${this.serviceUrl}/api/emergencyPick`, {
+      tour: 'PGA TOUR', playerId: playerId, playerName: playerName, email: email, userId: userId
+    }, {
+        Authorization: `Bearer ${this.authService.getWebToken().authToken}`
+      });
+  }
+
+  //// Need to be able to get user profiles from the Users Microservice:
+  // key/value can be userId, name, or email. 'all' ignores value.
+  async getProfiles(): Promise<any> {
+    let url = "https://ppppooluserservice.azurewebsites.net";
+    let response = await this.restService.post(`${url}/api/getProfile`, {
+      key: 'all'
+    }, {
+        Authorization: `Bearer ${this.authService.getWebToken().authToken}`
+      });
+    return response.Data;
   }
 }
