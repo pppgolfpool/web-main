@@ -13,6 +13,6 @@ export function configure(config: FrameworkConfiguration) {
     'resources/styles/minton/css/pages.css',
     'resources/styles/minton/css/responsive.css',
     'resources/styles/minton/css/variables.css',
-    'resources/valueConverters/dateFormat',
+    'resources/valueConverters/dateFormat'
   ]);
 }
