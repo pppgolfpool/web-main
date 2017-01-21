@@ -30,7 +30,8 @@ export function configure(aurelia: Aurelia) {
     .feature('microservices/stats/monthly')
     .feature('microservices/stats/playoffs')
     .feature('microservices/stats/season')
-    .feature('microservices/picks');
+    .feature('microservices/picks')
+    .feature('microservices/users');
 
   if (environment.debug) {
     LogManager.addAppender(new ConsoleAppender());

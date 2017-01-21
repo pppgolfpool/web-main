@@ -64,6 +64,6 @@ export class Response {
 
   StatusText: string;
   Status: number;
-  Data: Object;
+  Data: any;
   IsError: Boolean;
 }

@@ -1,0 +1,27 @@
+<template>
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="card-box">
+        <table id="regtable" class="table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Picked</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr repeat.for="registration of registrations">
+              <td><b>${registration.Name}</b></td>
+              <td>${registration.Email}</td>
+              <td>
+                <i class="${registration.Picked ? 'fa fa-check text-success' : 'fa fa-close text-danger'}"></i>
+                <p style="visibility: hidden">${registration.Picked ? '1' : '0'}</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</template>

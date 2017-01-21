@@ -1,11 +1,11 @@
 import { inject } from 'aurelia-dependency-injection';
-import { RestService } from '../../resources/services/restService';
+import { RestService, Response } from '../../resources/services/restService';
 import { LogManager } from 'aurelia-framework';
 import { AuthService } from '../../resources/services/authService';
 let log = LogManager.getLogger('pickClient');
 
 @inject(RestService, AuthService)
-export class PickClient {
+export class UsersClient {
   constructor(restService: RestService, authService: AuthService) {
     this.restService = restService;
     this.authService = authService;
@@ -32,7 +32,7 @@ export class PickClient {
     return response.Data;
   }
 
-  async getRegistration(){
+  async getRegistration() : Promise<Array<Object>>{
     let response = await this.restService.post(`${this.serviceUrl}/api/getRegistration`, null, {
         Authorization: `Bearer ${this.authService.getWebToken().authToken}`
       });
