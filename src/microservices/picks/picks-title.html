@@ -1,0 +1,4 @@
+<template bindable="name, state">
+    <h1 if.bind="state === 'picking'"><small>up next: </small> <span class="text-primary">${name}</span></h1>
+    <h1 if.bind="state === 'progressing'"><small>right now: </small> <span class="text-primary">${name}</span></h1>
+</template>

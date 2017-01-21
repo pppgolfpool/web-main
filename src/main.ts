@@ -29,7 +29,8 @@ export function configure(aurelia: Aurelia) {
     .feature('microservices/stats/majors')
     .feature('microservices/stats/monthly')
     .feature('microservices/stats/playoffs')
-    .feature('microservices/stats/season');
+    .feature('microservices/stats/season')
+    .feature('microservices/picks');
 
   if (environment.debug) {
     LogManager.addAppender(new ConsoleAppender());

@@ -2,7 +2,7 @@ import { inject } from 'aurelia-dependency-injection';
 import { RestService } from '../../resources/services/restService';
 import { LogManager } from 'aurelia-framework';
 import { AuthService } from '../../resources/services/authService';
-let log = LogManager.getLogger('authClient');
+let log = LogManager.getLogger('statsClient');
 
 @inject(RestService, AuthService)
 export class StatsClient {

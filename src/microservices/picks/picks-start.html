@@ -1,0 +1,5 @@
+<template bindable="date, state">
+    <require from="resources/valueConverters/dateFormat"></require>
+    <p if.bind="state === 'picking'" class="lead">This tournament starts on <strong class="text-warning">${date | dateFormat}</strong></p>
+    <p if.bind="state === 'progressing'" class="lead">This tournament started on <strong class="text-warning">${date | dateFormat}</strong></p>
+</template>

@@ -32,7 +32,6 @@ export class MonthlyStatsCustomElement {
 
   getMonthName(month: number): string {
     let strMonth = month > 9 ? `${month}` : `0${month}`;
-    console.log(strMonth);
     let date = new Date(`${strMonth}/02/2000`);
     let locale = 'en-us';
     return date.toLocaleString(locale, { month: "long" });

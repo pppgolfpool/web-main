@@ -1,0 +1,7 @@
+<template bindable="golfer">
+  <h3 if.bind="golfer === 'none'" class="text-danger">You have not picked a golfer for this tournament!</h3>
+  <div if.bind="golfer && golfer !== 'none'">
+    <h1><small>Your submission for this tournament:</small></h1>
+    <h3 class="text-info">${golfer.PlayerName}</h3>
+  </div>
+</template>

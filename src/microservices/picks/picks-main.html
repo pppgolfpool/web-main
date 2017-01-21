@@ -1,0 +1,31 @@
+<template>
+  <require from="./picks-title.html"></require>
+  <require from="./picks-start.html"></require>
+  <require from="./picks-state.html"></require>
+  <require from="./picks-pick.html"></require>
+  <div if.bind="tournament.State === 'picking' || tournament.State === 'progressing'">
+    <picks-title name="${tournament.Name}" state="${tournament.State}"></picks-title>
+    <div class="card-box col-sm-7">
+      <picks-start date="${tournament.Start}" state="${tournament.State}"></picks-start>
+      <picks-state state="${tournament.State}"></picks-state>
+      <picks-pick golfer.bind="pick"></picks-pick>
+        <div if.bind="golfers && tournament.State === 'picking'">
+          <div if.bind="tournament.State === 'picking'" class="form-group">
+            <select class="form-control" value.bind="selectedPlayer">
+            <option model.bind="null">Choose a Golfer...</option>
+            <option repeat.for="golfer of golfers"
+                    model.bind="golfer">
+                ${golfer.PlayerName}
+            </option>
+          </select>
+          </div>
+          <p class="text-success">Golfers unavailable to you (those you've already chosen twice), do not appear in the list.</p>
+          <button class="btn btn-primary" disabled.bind="!selectedPlayer || submitting" click.trigger="submitPick()">Submit Golfer</button>
+          <p class="m-t-10"><span class="text-warning">Note: </span>You can change your submission any time before the day the tournament begins.</p>
+        </div>
+    </div>
+  </div>
+  <div if.bind="tournament && tournament.State !== 'picking' && tournament.State !== 'progressing'">
+    <h1>There is no tournament this coming weekend.</h1>
+  </div>
+</template>

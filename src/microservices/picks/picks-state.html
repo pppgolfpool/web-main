@@ -1,0 +1,4 @@
+<template bindable="state">
+    <h2 if.bind="state === 'picking'"><small class="text-success">Pick submissions are now open.</small></h2>
+    <h2 if.bind="state === 'progressing'"><small class="text-danger">Pick submissions are now closed.</small></h2>
+</template>
