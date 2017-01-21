@@ -16,7 +16,7 @@ export class EmergencyPickCustomElement {
   private golfers: Object;
 
   async attached() {
-    this.profiles = await this.pickClient.getProfiles();
+    this.profiles = await this.pickClient.getUsers();
   }
 
   async loadGolfers(){

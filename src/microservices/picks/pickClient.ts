@@ -48,13 +48,8 @@ export class PickClient {
       });
   }
 
-  //// Need to be able to get user profiles from the Users Microservice:
-  // key/value can be userId, name, or email. 'all' ignores value.
-  async getProfiles(): Promise<any> {
-    let url = "https://ppppooluserservice.azurewebsites.net";
-    let response = await this.restService.post(`${url}/api/getProfile`, {
-      key: 'all'
-    }, {
+  async getUsers(): Promise<any> {
+    let response = await this.restService.post(`${this.serviceUrl}/api/getUsers`, null, {
         Authorization: `Bearer ${this.authService.getWebToken().authToken}`
       });
     return response.Data;

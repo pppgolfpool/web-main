@@ -1168,18 +1168,14 @@ define('microservices/picks/pickClient',["require", "exports", "aurelia-dependen
                 });
             });
         };
-        PickClient.prototype.getProfiles = function () {
+        PickClient.prototype.getUsers = function () {
             return __awaiter(this, void 0, void 0, function () {
-                var url, response;
+                var response;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0:
-                            url = "https://ppppooluserservice.azurewebsites.net";
-                            return [4 /*yield*/, this.restService.post(url + "/api/getProfile", {
-                                    key: 'all'
-                                }, {
-                                    Authorization: "Bearer " + this.authService.getWebToken().authToken
-                                })];
+                        case 0: return [4 /*yield*/, this.restService.post(this.serviceUrl + "/api/getUsers", null, {
+                                Authorization: "Bearer " + this.authService.getWebToken().authToken
+                            })];
                         case 1:
                             response = _a.sent();
                             return [2 /*return*/, response.Data];
@@ -1253,7 +1249,7 @@ define('microservices/picks/emergency-pick',["require", "exports", "aurelia-fram
                     switch (_b.label) {
                         case 0:
                             _a = this;
-                            return [4 /*yield*/, this.pickClient.getProfiles()];
+                            return [4 /*yield*/, this.pickClient.getUsers()];
                         case 1:
                             _a.profiles = _b.sent();
                             return [2 /*return*/];
