@@ -4,7 +4,6 @@
   <require from="./picks-state.html"></require>
   <require from="./picks-pick.html"></require>
   <div if.bind="tournament.State === 'picking' || tournament.State === 'progressing'">
-    test,test,test
     <picks-title name="${tournament.Name}" state="${tournament.State}"></picks-title>
     <div class="card-box col-sm-7">
       <picks-start date="${tournament.Start}" state="${tournament.State}"></picks-start>
