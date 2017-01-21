@@ -18,7 +18,6 @@ export class PicksMainCustomElement {
     let data = await this.pickClient.getCurrentPickInfo();
     this.tournament = data["Tournament"];
     this.golfers = data["Golfers"];
-    this.tournament["State"] = 'picking';
     let pickData = await this.pickClient.getPickForCurrent(<string>this.tournament["Index"]);
     if(pickData["empty"]){
       this.pick = 'none';
