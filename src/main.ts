@@ -12,7 +12,7 @@ import { Router, RouterConfiguration } from 'aurelia-router';
 
 //Configure Bluebird Promises.
 (<any>Promise).config({
-  longStackTraces: environment.debug,
+  longStackTraces: false,
   warnings: {
     wForgottenReturn: false
   }

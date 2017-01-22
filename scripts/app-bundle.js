@@ -589,7 +589,7 @@ define('microservices/auth/authClient',["require", "exports", "aurelia-dependenc
 define('main',["require", "exports", "./environment", "aurelia-framework", "aurelia-logging-console", "aurelia-fetch-client", "aurelia-event-aggregator", "./microservices/auth/authClient"], function (require, exports, environment_1, aurelia_framework_1, aurelia_logging_console_1, aurelia_fetch_client_1, aurelia_event_aggregator_1, authClient_1) {
     "use strict";
     Promise.config({
-        longStackTraces: environment_1.default.debug,
+        longStackTraces: false,
         warnings: {
             wForgottenReturn: false
         }
