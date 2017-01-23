@@ -38,6 +38,11 @@ export class CurrentStatsCustomElement {
     this.maxPoints = Math.max.apply(null, points);
   }
 
+  padZeros(num, size) {
+    var s = "000000000" + num;
+    return s.substr(s.length - size);
+  }
+
   getPooliesConfig() {
     return {
       columnDefs: [
@@ -55,12 +60,13 @@ export class CurrentStatsCustomElement {
   getGolfersConfig() {
     return {
       columnDefs: [
-        { type: "string" },
-        { type: "num" },
-        { type: "num" },
-        { type: "num" },
-        { type: "num" },
-        { type: "num" }
+        { type: "string", targets:[0] },
+        { type: "num", targets:[1] },
+        { type: "num", targets:[2], orderData:[3] },
+        { type: "num", targets:[3], visible: false, searchable: false },
+        { type: "num", targets:[4] },
+        { type: "num", targets:[5] }
+        { type: "num", targets:[6] }
       ],
       order: [[1, 'desc']],
       paging: false,
