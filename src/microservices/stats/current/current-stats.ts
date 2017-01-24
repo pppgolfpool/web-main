@@ -65,7 +65,7 @@ export class CurrentStatsCustomElement {
         { type: "num", targets:[2], orderData:[3] },
         { type: "num", targets:[3], visible: false, searchable: false },
         { type: "num", targets:[4] },
-        { type: "num", targets:[5] }
+        { type: "num", targets:[5] },
         { type: "num", targets:[6] }
       ],
       order: [[1, 'desc']],
