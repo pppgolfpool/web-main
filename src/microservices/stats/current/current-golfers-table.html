@@ -16,7 +16,7 @@
       <tr repeat.for="golfer of golfers">
         <td><a href="http://www.pgatour.com/players/player.${golfer.Id}.html" target="_blank">${golfer.Name}</a></td>
         <td>${golfer.PickCount}</td>
-        <td class="${golfer.Status === 'cut' ? 'table-red' : '' }">${golfer.Status === 'active' ? golfer.Rank : 'cut'}</td>
+        <td class="${golfer.Status === 'active' ? '' : 'table-red' }">${golfer.Status === 'active' ? golfer.Rank : golfer.Status}</td>
         <td hidden="hidden">${golfer.Status === 'active' ? golfer.Rank : 999}</td>
         <td>${golfer.ParTotal}</td>
         <td>${golfer.Thru}</td>
