@@ -34,6 +34,7 @@ export class RouterService {
       config.map([
         { route: [""], moduleId: "./main/statistics/statistics", title: 'Statistics', nav: true },
         { route: ["picks"], moduleId: "./main/picks/picks", title: 'Picks', nav: true },
+        { route: ["winners"], moduleId: "./main/winners/winners", title: 'Winners', nav: true },
         { route: ["feedback"], moduleId: "./main/feedback/feedback", title: 'Feedback' },
         { route: ["admin"], moduleId: "./main/admin/admin", title: 'Admin', nav: true },
         { route: ["settings"], moduleId: "./main/settings/settings", title: 'Settings', nav: true },
