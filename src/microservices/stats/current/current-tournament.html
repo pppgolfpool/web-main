@@ -1,6 +1,6 @@
 <template bindable="tournament">
   <div class="card-box">
-    <h4 class="header-title"><span class="text-info">${tournament.Name}</span><a target="_blank" href="${tournament.Link}" class="m-l-10">(pga.com)</a></h4>
+    <h4 class="header-title"><span class="text-info">${tournament.Name}</span></h4>
     <h4 class="pull-right"></h4>
     <h4 if.bind="tournament.State === 'progressing'"><b class="text-warning m-r-10">This tournament is in progress</b> (Round ${tournament.CurrentRound}/${tournament.TotalRounds})</h4>
     <h4 if.bind="tournament.State === 'completed'"><b class="text-success">This tournament is Complete</b></h4>
@@ -8,3 +8,5 @@
     <h4>${tournament.State === 'progressing' ? 'Champion' : 'Champion'}: <b>${tournament.Champion.FirstName} ${tournament.Champion.LastName}</b></h4>
   </div>
 </template>
+
+<!--<a target="_blank" href="${tournament.Link}" class="m-l-10">(pga.com)</a>-->
