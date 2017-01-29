@@ -6,12 +6,14 @@
         <thead>
           <tr>
             <th>Poolie</th>
+            <th>Curr. Month Projection</th>
             <th repeat.for="monthName of monthNames">${monthName}</th>
           </tr>
         </thead>
         <tbody>
           <tr repeat.for="poolie of poolies">
             <td>${poolie.LastFirst}</td>
+            <td>${poolie.projectedPoints}</td>
             <td repeat.for="points of poolie.Points">${points}</td>
           </tr>
         </tbody>

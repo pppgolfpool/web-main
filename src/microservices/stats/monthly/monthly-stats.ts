@@ -39,7 +39,8 @@ export class MonthlyStatsCustomElement {
 
   getTableConfig() {
     let columnDefs = [
-      { type: 'string' }
+      { type: 'string' },
+      { type: 'num' }
     ]
     for (var i = 0; i < this.currentMonth; i++) {
       columnDefs.push({ type: 'num' });
@@ -47,7 +48,7 @@ export class MonthlyStatsCustomElement {
 
     return {
       columnDefs: columnDefs,
-      order: [[this.currentMonth, 'desc']],
+      order: [[1, 'desc']],
       paging: false,
       info: false
     };
