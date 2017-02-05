@@ -12,8 +12,6 @@ export class RouterService {
   private readonly eventService: EventService;
 
   constructor(router: Router, eventAggregator: EventAggregator, eventService: EventService) {
-    console.log('router ctor');  
-    console.log(router);
     this.eventAggregator = eventAggregator;
     this.eventService = eventService;
     this.eventAggregator.subscribe('router:navigation:complete', data => {
@@ -22,14 +20,11 @@ export class RouterService {
       } else {
         this.currentRoute = this.determineRoute(data.instruction.fragment);
       }
-      console.log("route: " + data.instruction.fragment);
       this.eventService.publish('routed', this.currentRoute);
     });      
   }
 
   public configure(config: RouterConfiguration) : RouterConfiguration {
-
-    console.log('configuring router');
     config.title = "ppppool",
       config.map([
         { route: [""], moduleId: "./main/statistics/statistics", title: 'Statistics', nav: true },

@@ -34,7 +34,6 @@ export class StatsClient {
     }, {
       Authorization: `Bearer ${this.authService.getWebToken().authToken}`
     });
-    console.log(response.Data);
     return response.Data;
   }
 

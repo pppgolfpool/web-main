@@ -15,7 +15,6 @@ export class CurrentStatsCustomElement {
       } else if(data){
         await this.getData(<string>data["Index"]);
       }
-      //this.setupTables();
     });
   }
 

@@ -1,18 +1,16 @@
 <template>
-  <div class="col-lg-6">
-    <div class="form-group">
-      <form class="form-inline">
-        <label for="tournamentSelect">Tournament: </label>
-        <div class="form-group">
-          <select id="tournamentSelect" class="form-control" value.bind="selectedTournament" change.delegate="tournamentChanged()">
+  <div class="form-group">
+    <form class="form-inline">
+      <label for="tournamentSelect">Tournament: </label>
+      <div class="form-group">
+        <select id="tournamentSelect" class="form-control" value.bind="selectedTournament" change.delegate="tournamentChanged()">
           <option>Current</option>
           <option repeat.for="tournament of tournaments"
                   model.bind="tournament">
               ${tournament.Name} - Week ${tournament.WeekNumber}
           </option>
         </select>
-        </div>
-      </form>
-    </div>
+      </div>
+    </form>
   </div>
 </template>

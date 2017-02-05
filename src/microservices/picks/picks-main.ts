@@ -32,7 +32,6 @@ export class PicksMainCustomElement {
     }
     this.submitting = true;
     let response = await this.pickClient.pickGolfer(<string>this.selectedPlayer["TournamentPlayerId"], <string>this.selectedPlayer["PlayerName"]);
-    console.log(response);
     let pickData = await this.pickClient.getPickForCurrent(<string>this.tournament["Index"]);
     if(pickData["empty"]){
       this.pick = 'none';
