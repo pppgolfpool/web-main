@@ -1,3 +1,14 @@
 <template>
-  <picks-main></picks-main>
+  <ul class="nav nav-pills m-b-15">
+      <li class="active"><a data-toggle="pill" href="#currentPick" aria-expanded="true"><h4>Current</h4></a></li>
+      <li><a data-toggle="pill" href="#pickSummary" aria-expanded="true"><h4>Summary</h4></a></li>
+  </ul>
+  <div class="tab-content br-n pn">
+    <div id="currentPick" class="tab-pane fade in active">
+      <picks-main></picks-main>
+    </div>
+    <div id="pickSummary" class="tab-pane fade">
+      <pick-summary></pick-summary>
+    </div>
+  </div>
 </template>

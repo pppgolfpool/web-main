@@ -54,4 +54,13 @@ export class PickClient {
       });
     return response.Data;
   }
+
+  async getPickSummary() {
+    let response = await this.restService.post(`${this.serviceUrl}/api/getPickSummary`, {
+      season: 'current', tour: "PGA TOUR"
+    }, {
+        Authorization: `Bearer ${this.authService.getWebToken().authToken}`
+      });
+    return response.Data;    
+  }
 }

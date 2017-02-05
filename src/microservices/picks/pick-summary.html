@@ -1,0 +1,4 @@
+<template>
+  <require from="./user-picks.html"></require>
+  <user-picks repeat.for="pick of picks | objectKeys" key.bind="pick" picks.bind="picks[pick]">
+</template>
