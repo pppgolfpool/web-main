@@ -25,4 +25,5 @@ export type EventType =
   'response' |
   'routed' |
   'notAdmin' |
-  'adminDetected';
+  'adminDetected' |
+  'tournamentChanged';

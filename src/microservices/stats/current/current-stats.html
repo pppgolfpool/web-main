@@ -3,6 +3,9 @@
   <require from="./current-course.html"></require>
   <require from="./current-poolies-table.html"></require>
   <require from="./current-golfers-table.html"></require>
+  <div class="row">
+    <tournament-selector></tournament-selector>
+  </div>
   <div class="row" if.bind="tournament">
     <div class="col-sm-5">
       <current-tournament tournament.bind="tournament"></current-tournament>

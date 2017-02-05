@@ -28,6 +28,16 @@ export class StatsClient {
     return response.Data;
   }
 
+  async getSpecificTournamentStats(index: String) : Promise<Object>{
+    let response = await this.restService.post(`${this.serviceUrl}/api/getTournament`, {
+      season: 'current', tour: 'PGA TOUR', key:'index', value: index
+    }, {
+      Authorization: `Bearer ${this.authService.getWebToken().authToken}`
+    });
+    console.log(response.Data);
+    return response.Data;
+  }
+
   async getSeasonStats(
     season: string = 'current',
     tour: string = 'PGA TOUR'): Promise<Object>{
