@@ -4,6 +4,7 @@
     <h4 class="pull-right"></h4>
     <h4 if.bind="tournament.State === 'progressing'"><b class="text-warning m-r-10">This tournament is in progress</b> (Round ${tournament.CurrentRound}/${tournament.TotalRounds})</h4>
     <h4 if.bind="tournament.State === 'completed'"><b class="text-success">This tournament is Complete</b></h4>
+    <h4 if.bind="tournament.State === 'dequeued'"><b class="text-success">This tournament is ancient history.</b></h4>
     <p>${tournament.Start | dateFormat} to ${tournament.End | dateFormat}</p>
     <h4>${tournament.State === 'progressing' ? 'Champion' : 'Champion'}: <b>${tournament.Champion.FirstName} ${tournament.Champion.LastName}</b></h4>
   </div>

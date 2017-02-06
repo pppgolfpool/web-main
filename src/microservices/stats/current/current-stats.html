@@ -8,7 +8,7 @@
       <tournament-selector></tournament-selector>
     </div>
   </div>
-  <p if.bind="tournament.State === 'dequeued'" class="text-info">You're viewing a past tournament. Start and Final Rank refer to the poolie's rank before the tournament started, and after it finished.</p>
+  <p if.bind="tournament.State === 'dequeued'" class="text-info">You're viewing a past tournament. Start and Final Rank refer to the poolie's rank before the tournament started, and after it finished, respectively.</p>
   <div class="row" if.bind="tournament">
     <div class="col-sm-5">
       <current-tournament tournament.bind="tournament"></current-tournament>
