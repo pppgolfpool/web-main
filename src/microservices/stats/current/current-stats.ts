@@ -10,11 +10,14 @@ export class CurrentStatsCustomElement {
     this.eventService.subscribe('tournamentChanged', async data => {
       console.log(data);
       this.tournament = null;
+      this.poolieTable.fnDestroy();
+      this.golferTable.fnDestroy();
       if(data == 'Current'){
         await this.getData();
       } else if(data){
         await this.getData(<string>data["Index"]);
       }
+      this.setupTables();
     });
   }
 
@@ -28,6 +31,9 @@ export class CurrentStatsCustomElement {
   private pooliesConfig: Object;
   private maxPoints: number;
 
+  private poolieTable: any;
+  private golferTable: any;
+
   async attached() {
     await this.getData();
     this.setupTables();
@@ -35,10 +41,19 @@ export class CurrentStatsCustomElement {
 
   setupTables(){
     window.setTimeout(() => {
-      (<any>$('#pooliestable')).dataTable(this.getPooliesConfig());
-      (<any>$('#golferstable')).dataTable(this.getGolfersConfig());
+      this.poolieTable = (<any>$('#pooliestable')).dataTable(this.getPooliesConfig());
+      console.log(this.poolieTable);
+      this.golferTable = (<any>$('#golferstable')).dataTable(this.getGolfersConfig());
       (<any>$('input')).addClass("form-control input-sm");
     }, 1000);
+  }
+
+  reSetupTables(){
+    window.setTimeout(() => {
+      (<any>$('#pooliestable')).dataTable();
+      (<any>$('#golferstable')).dataTable();
+      (<any>$('input')).addClass("form-control input-sm");
+    }, 1000);    
   }
 
   async getData(index: string = null) {
