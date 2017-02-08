@@ -1,4 +1,8 @@
 <template>
   <require from="./user-picks.html"></require>
-  <user-picks repeat.for="pick of picks | objectKeys" key.bind="pick" picks.bind="picks[pick]">
+  <form class="form-inline" style="margin-bottom: 10px">
+    <label for="picksummarysearch">Search:</label>
+    <input class="form-control" type="text" value.bind="search"></input>
+  </form>
+  <user-picks repeat.for="pick of subPicks | objectKeys" key.bind="pick" picks.bind="subPicks[pick]">
 </template>
