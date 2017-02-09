@@ -1,8 +1,10 @@
 <template>
   <require from="./user-picks.html"></require>
   <form class="form-inline" style="margin-bottom: 10px">
-    <label for="picksummarysearch">Search:</label>
+    <label for="picksummarysearch">Poolie:</label>
     <input class="form-control" type="text" value.bind="search"></input>
+    <label for="picksummarygolfer" style="margin-left: 15px">Golfer:</label>
+    <input class="form-control" type="text" value.bind="golfer"></input>
   </form>
-  <user-picks repeat.for="pick of subPicks | objectKeys" key.bind="pick" picks.bind="subPicks[pick]">
+  <user-picks repeat.for="pick of golferPicks | objectKeys" key.bind="pick" picks.bind="golferPicks[pick]">
 </template>
