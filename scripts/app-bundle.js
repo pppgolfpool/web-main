@@ -935,16 +935,6 @@ define('main/picks/picks',["require", "exports"], function (require, exports) {
     exports.Picks = Picks;
 });
 
-define('main/winners/winners',["require", "exports"], function (require, exports) {
-    "use strict";
-    var Winners = (function () {
-        function Winners() {
-        }
-        return Winners;
-    }());
-    exports.Winners = Winners;
-});
-
 define('main/statistics/statistics',["require", "exports"], function (require, exports) {
     "use strict";
     var Statistics = (function () {
@@ -954,6 +944,16 @@ define('main/statistics/statistics',["require", "exports"], function (require, e
         return Statistics;
     }());
     exports.Statistics = Statistics;
+});
+
+define('main/winners/winners',["require", "exports"], function (require, exports) {
+    "use strict";
+    var Winners = (function () {
+        function Winners() {
+        }
+        return Winners;
+    }());
+    exports.Winners = Winners;
 });
 
 define('microservices/auth/index',["require", "exports"], function (require, exports) {
@@ -2357,26 +2357,6 @@ define('microservices/stats/current/index',["require", "exports"], function (req
     exports.configure = configure;
 });
 
-define('microservices/stats/history/history-stats',["require", "exports"], function (require, exports) {
-    "use strict";
-    var HistoryStatsCustomElement = (function () {
-        function HistoryStatsCustomElement() {
-        }
-        return HistoryStatsCustomElement;
-    }());
-    exports.HistoryStatsCustomElement = HistoryStatsCustomElement;
-});
-
-define('microservices/stats/history/index',["require", "exports"], function (require, exports) {
-    "use strict";
-    function configure(config) {
-        config.globalResources([
-            './history-stats'
-        ]);
-    }
-    exports.configure = configure;
-});
-
 define('microservices/stats/majors/index',["require", "exports"], function (require, exports) {
     "use strict";
     function configure(config) {
@@ -2395,6 +2375,26 @@ define('microservices/stats/majors/majors-stats',["require", "exports"], functio
         return MajorsStatsCustomElement;
     }());
     exports.MajorsStatsCustomElement = MajorsStatsCustomElement;
+});
+
+define('microservices/stats/history/history-stats',["require", "exports"], function (require, exports) {
+    "use strict";
+    var HistoryStatsCustomElement = (function () {
+        function HistoryStatsCustomElement() {
+        }
+        return HistoryStatsCustomElement;
+    }());
+    exports.HistoryStatsCustomElement = HistoryStatsCustomElement;
+});
+
+define('microservices/stats/history/index',["require", "exports"], function (require, exports) {
+    "use strict";
+    function configure(config) {
+        config.globalResources([
+            './history-stats'
+        ]);
+    }
+    exports.configure = configure;
 });
 
 define('microservices/stats/monthly/index',["require", "exports"], function (require, exports) {
@@ -2766,5 +2766,5 @@ define('text!microservices/stats/history/history-stats.html', ['module'], functi
 define('text!microservices/stats/majors/majors-stats.html', ['module'], function(module) { module.exports = "<template>\r\n  majors\r\n</template>"; });
 define('text!microservices/stats/monthly/monthly-stats.html', ['module'], function(module) { module.exports = "<template>\r\n  <div class=\"col-lg-12\" if.bind=\"poolies\">\r\n    <h2><span style=\"margin-right: 20px\">FedEx Cup Points per Month</span><small>as of ${getMonthName(currentMonth)}</small></h2>\r\n    <div class=\"card-box\">\r\n      <table id=\"monthtable\" class=\"table\">\r\n        <thead>\r\n          <tr>\r\n            <th>Poolie</th>\r\n            <th>Curr. Month Projection</th>\r\n            <th repeat.for=\"monthName of monthNames\">${monthName}</th>\r\n          </tr>\r\n        </thead>\r\n        <tbody>\r\n          <tr repeat.for=\"poolie of poolies\">\r\n            <td>${poolie.LastFirst}</td>\r\n            <td>${poolie.projectedPoints}</td>\r\n            <td repeat.for=\"points of poolie.Points\">${points}</td>\r\n          </tr>\r\n        </tbody>\r\n      </table>\r\n    </div>\r\n  </div>\r\n</template>"; });
 define('text!microservices/stats/playoffs/playoff-stats.html', ['module'], function(module) { module.exports = "<template>\r\n  playoff\r\n</template>"; });
-define('text!microservices/stats/season/season-stats.html', ['module'], function(module) { module.exports = "<template>\r\n  <require from=\"./season-stats-styles.css\"></require>\r\n  <div class=\"col-lg-12\" if.bind=\"poolies\">\r\n    <h2><span style=\"margin-right: 20px\">${season} Season Stats</span><small>after week ${week - 1} / <span class=\"text-primary\">${tournamentName}</span></small></h2>\r\n    <div class=\"card-box\">\r\n      <table id=\"seasontable\" class=\"table\">\r\n        <thead>\r\n          <tr>\r\n            <th>Rank</th>\r\n            <th>Change</th>\r\n            <th>Poolie</th>\r\n            <th>Points</th>\r\n            <th>Behind</th>\r\n            <th>Wins</th>\r\n            <th>Top 5s</th>\r\n            <th>Top 10s</th>\r\n            <th>Cuts</th>\r\n            <th>+/-</th>\r\n          </tr>\r\n        </thead>\r\n        <tbody>\r\n          <tr repeat.for=\"poolie of poolies\">\r\n            <td>${poolie.Rank}</td>\r\n            <td class=\"${poolie.Change > 0 ? 'table-green' : (poolie.Change < 0 ? 'table-red' : '')}\">${poolie.Change}</td>\r\n            <td>${poolie.LastFirst}</td>\r\n            <td>${poolie.Points}</td>\r\n            <td>${poolie.Behind}</td>\r\n            <td class=\"${poolie.Wins === maxWins ? 'table-green' : ''}\">${poolie.Wins}</td>\r\n            <td class=\"${poolie.Top5 === maxTop5 ? 'table-green' : ''}\">${poolie.Top5}</td>\r\n            <td class=\"${poolie.Top10 === maxTop10 ? 'table-green' : ''}\">${poolie.Top10}</td>\r\n            <td class=\"${poolie.Cuts === maxCuts ? 'table-red' : ''}\">${poolie.Cuts}</td>\r\n            <td class=\"${poolie.PlusMinus === maxPlusMinus ? 'table-green' : ''}\">${poolie.PlusMinus}</td>\r\n          </tr>\r\n        </tbody>\r\n      </table>\r\n    </div>\r\n  </div>\r\n</template>"; });
+define('text!microservices/stats/season/season-stats.html', ['module'], function(module) { module.exports = "<template>\r\n  <require from=\"./season-stats-styles.css\"></require>\r\n  <div class=\"col-lg-12\" if.bind=\"poolies\">\r\n    <h2><span style=\"margin-right: 20px\">${season} Season Stats</span><small>after week ${week - 1} / <span class=\"text-primary\">${tournamentName}</span></small></h2>\r\n    <div class=\"card-box\">\r\n      <table id=\"seasontable\" class=\"table\">\r\n        <thead>\r\n          <tr>\r\n            <th>Rank</th>\r\n            <th>Change</th>\r\n            <th>Poolie</th>\r\n            <th>Points</th>\r\n            <th>Behind</th>\r\n            <th>Wins</th>\r\n            <th>Top 5s</th>\r\n            <th>Top 10s</th>\r\n            <th>Cuts</th>\r\n            <th>+/-</th>\r\n          </tr>\r\n        </thead>\r\n        <tbody>\r\n          <tr repeat.for=\"poolie of poolies\">\r\n            <td>${poolie.Rank}</td>\r\n            <td class=\"${poolie.Change > 0 ? 'table-green' : (poolie.Change < 0 ? 'table-red' : '')}\">${poolie.Change}</td>\r\n            <td>${poolie.LastFirst}</td>\r\n            <td>${poolie.Points}</td>\r\n            <td>${poolie.Behind}</td>\r\n            <td class=\"${poolie.Wins === maxWins ? 'table-green' : ''}\">${poolie.Wins}</td>\r\n            <td class=\"${poolie.Top5 === maxTop5 ? 'table-green' : ''}\">${poolie.Top5}</td>\r\n            <td class=\"${poolie.Top10 === maxTop10 ? 'table-green' : ''}\">${poolie.Top10}</td>\r\n            <td class=\"${poolie.Cuts === 0 ? 'table-green' : ''}\">${poolie.Cuts}</td>\r\n            <td class=\"${poolie.PlusMinus === maxPlusMinus ? 'table-green' : ''}\">${poolie.PlusMinus}</td>\r\n          </tr>\r\n        </tbody>\r\n      </table>\r\n    </div>\r\n  </div>\r\n</template>"; });
 //# sourceMappingURL=app-bundle.js.map
