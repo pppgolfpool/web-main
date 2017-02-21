@@ -5,7 +5,7 @@ import { AuthService, WebToken } from '../resources/services/authService';
 
 @inject(AuthService, EventService)
 export class TopBarCustomElement {
-  private title: string = "PPP PGA Pool";
+  private title: string = "PPP PGA Pool 2017";
   private currentRoute: string = 'statistics';
   private loggedIn: boolean = false;
 
