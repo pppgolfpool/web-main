@@ -15,7 +15,7 @@ export class RestService {
     if(!headers){
       headers = {}
     }
-    headers['Content-Type'] = 'application/json; charset=utf-8';
+    headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
     let response = await this.http.fetch(urlQuery, {
       method: 'post',
       headers: headers ? headers : {},

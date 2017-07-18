@@ -59,4 +59,16 @@ export class StatsClient {
       });
       return response.Data;
     }    
+
+    
+  async getMajorsStats(
+    season: string = 'current',
+    tour: string = 'PGA TOUR'): Promise<Object>{
+      let response = await this.restService.post(`https://ppppoolmajors.azurewebsites.net/api/GetMajors`, {
+        season
+      }, {
+        Authorization: `Bearer ${this.authService.getWebToken().authToken}`
+      });
+      return response.Data;
+    }
 }
